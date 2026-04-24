@@ -649,6 +649,45 @@
     50% { opacity: 0.4; transform: scale(0.7); }
   }
 
+  /* NUCLEAR BUTTON */
+  .nuclear-btn {
+    width: 100%;
+    padding: 18px;
+    margin-top: 24px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(180deg, #e03030 0%, #b01010 100%);
+    color: white;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    box-shadow: 0 4px 0 #7a0000, 0 6px 20px rgba(176,16,16,0.4);
+    transition: all 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    text-transform: uppercase;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .nuclear-btn:active {
+    transform: translateY(3px);
+    box-shadow: 0 1px 0 #7a0000, 0 2px 8px rgba(176,16,16,0.3);
+  }
+
+  .nuclear-btn::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 50%;
+    background: rgba(255,255,255,0.08);
+    border-radius: 14px 14px 0 0;
+  }
+
   /* SCROLLBAR */
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
@@ -720,6 +759,7 @@
           <p>Your organised list will appear here.<br>Type items in the Free-type tab first.</p>
         </div>
       </div>
+      <button class="nuclear-btn" onclick="completeShop()">☢️ Complete Shop</button>
     </div>
   </div>
 </div>
@@ -1166,6 +1206,17 @@ function deleteItem(id) {
 function clearDone() {
   items = items.filter(i => !i.checked);
   renderOrganised();
+}
+
+function completeShop() {
+  if (!confirm('Shop complete? This will clear everything.')) return;
+  items = [];
+  document.getElementById('notepadText').value = '';
+  localStorage.removeItem('shopsmart_notepad');
+  localStorage.removeItem('shopsmart_items');
+  document.getElementById('parseStatus').classList.remove('visible');
+  renderOrganised();
+  showView('notepad');
 }
 
 function toggleCategory(catId) {
