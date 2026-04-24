@@ -1,0 +1,1211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Shopping List</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #f5f0e8;
+    --cream-dark: #ede7d9;
+    --ink: #2c2416;
+    --ink-light: #6b5e4a;
+    --ink-faint: #b0a090;
+    --green: #3d6b4a;
+    --green-light: #e8f0ea;
+    --green-mid: #7aaa88;
+    --rust: #c4622d;
+    --rust-light: #f5ebe4;
+    --paper-shadow: 0 2px 12px rgba(44,36,22,0.12);
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream-dark);
+    color: var(--ink);
+    min-height: 100vh;
+    background-image: 
+      radial-gradient(ellipse at 20% 0%, rgba(61,107,74,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 80% 100%, rgba(196,98,45,0.05) 0%, transparent 60%);
+  }
+
+  .app {
+    max-width: 480px;
+    margin: 0 auto;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* HEADER */
+  header {
+    padding: 20px 20px 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .logo {
+    font-family: 'Lora', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink);
+    letter-spacing: -0.3px;
+  }
+
+  .logo span {
+    color: var(--green);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .wake-lock-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 1.5px solid var(--ink-faint);
+    background: transparent;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--ink-light);
+    transition: all 0.2s;
+  }
+
+  .wake-lock-btn.active {
+    border-color: var(--green);
+    background: var(--green-light);
+    color: var(--green);
+  }
+
+  .wake-dot {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+    transition: background 0.2s;
+  }
+
+  .wake-lock-btn.active .wake-dot {
+    background: var(--green);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  /* TOGGLE */
+  .toggle-bar {
+    margin: 16px 20px 0;
+    background: var(--cream);
+    border-radius: 30px;
+    padding: 4px;
+    display: flex;
+    box-shadow: inset 0 1px 3px rgba(44,36,22,0.1);
+  }
+
+  .toggle-btn {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    background: transparent;
+    border-radius: 26px;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--ink-light);
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+  }
+
+  .toggle-btn.active {
+    background: var(--ink);
+    color: var(--cream);
+    font-weight: 500;
+    box-shadow: 0 1px 6px rgba(44,36,22,0.2);
+  }
+
+  .toggle-icon { font-size: 15px; }
+
+  /* MAIN CONTENT */
+  .views {
+    flex: 1;
+    padding: 16px 20px 100px;
+    overflow-y: auto;
+  }
+
+  /* VIEW 1 — NOTEPAD */
+  .notepad-view { display: none; }
+  .notepad-view.visible { display: block; }
+
+  .notepad-card {
+    background: var(--cream);
+    border-radius: var(--radius);
+    box-shadow: var(--paper-shadow);
+    overflow: hidden;
+  }
+
+  .notepad-header {
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--cream-dark);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .notepad-label {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 14px;
+    color: var(--ink-light);
+  }
+
+  .char-hint {
+    font-size: 12px;
+    color: var(--ink-faint);
+  }
+
+  .notepad-lines {
+    position: relative;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 360px;
+    padding: 18px 20px;
+    border: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    line-height: 2;
+    color: var(--ink);
+    resize: none;
+    outline: none;
+    display: block;
+    background-image: repeating-linear-gradient(
+      transparent,
+      transparent calc(2em - 1px),
+      rgba(176,160,144,0.18) calc(2em - 1px),
+      rgba(176,160,144,0.18) 2em
+    );
+    background-size: 100% 2em;
+  }
+
+  textarea::placeholder {
+    color: var(--ink-faint);
+    font-style: italic;
+  }
+
+  .notepad-footer {
+    padding: 14px 18px;
+    border-top: 1px solid var(--cream-dark);
+    display: flex;
+    gap: 10px;
+  }
+
+  .btn {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s;
+  }
+
+  .btn-primary {
+    background: var(--green);
+    color: white;
+    flex: 1;
+  }
+
+  .btn-primary:hover { background: #305540; }
+
+  .btn-ghost {
+    background: transparent;
+    color: var(--ink-light);
+    border: 1.5px solid var(--cream-dark);
+  }
+
+  .btn-ghost:hover {
+    border-color: var(--ink-faint);
+    color: var(--ink);
+  }
+
+  /* PARSING STATUS */
+  .parse-status {
+    display: none;
+    margin-top: 12px;
+    padding: 10px 14px;
+    background: var(--green-light);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--green);
+    border: 1px solid rgba(61,107,74,0.15);
+    align-items: center;
+    gap: 8px;
+  }
+
+  .parse-status.visible { display: flex; }
+
+  /* VIEW 2 — ORGANISED */
+  .organised-view { display: none; }
+  .organised-view.visible { display: block; }
+
+  .list-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 14px;
+  }
+
+  .list-count {
+    font-size: 13px;
+    color: var(--ink-light);
+  }
+
+  .list-count strong { color: var(--ink); }
+
+  .clear-done-btn {
+    font-size: 13px;
+    color: var(--rust);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'DM Sans', sans-serif;
+    padding: 4px 0;
+  }
+
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--ink-faint);
+  }
+
+  .empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+  .empty-state p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 15px;
+  }
+
+  /* CATEGORY GROUPS */
+  .category-group {
+    margin-bottom: 18px;
+    background: var(--cream);
+    border-radius: var(--radius);
+    box-shadow: var(--paper-shadow);
+    overflow: hidden;
+  }
+
+  .category-header {
+    padding: 12px 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--cream);
+    border-bottom: 1px solid var(--cream-dark);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .category-emoji { font-size: 17px; }
+
+  .category-name {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink);
+    flex: 1;
+  }
+
+  .category-badge {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--ink-faint);
+    background: var(--cream-dark);
+    padding: 2px 8px;
+    border-radius: 10px;
+  }
+
+  .category-badge.done {
+    color: var(--green);
+    background: var(--green-light);
+  }
+
+  .category-toggle {
+    font-size: 12px;
+    color: var(--ink-faint);
+    transition: transform 0.2s;
+  }
+
+  .category-toggle.collapsed { transform: rotate(-90deg); }
+
+  .category-items { }
+
+  .category-items.collapsed { display: none; }
+
+  /* ITEM ROW */
+  .item-row {
+    display: flex;
+    align-items: center;
+    padding: 13px 16px;
+    border-bottom: 1px solid var(--cream-dark);
+    gap: 12px;
+    transition: background 0.15s;
+  }
+
+  .item-row:last-child { border-bottom: none; }
+  .item-row:hover { background: rgba(176,160,144,0.06); }
+
+  .item-row.checked {
+    background: rgba(61,107,74,0.04);
+  }
+
+  /* CUSTOM CHECKBOX */
+  .item-checkbox {
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--ink-faint);
+    background: white;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+
+  .item-row.checked .item-checkbox {
+    background: var(--green);
+    border-color: var(--green);
+  }
+
+  .item-checkbox::after {
+    content: '';
+    width: 6px;
+    height: 10px;
+    border: 2px solid white;
+    border-top: none;
+    border-left: none;
+    transform: rotate(45deg) translate(-1px, -1px);
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .item-row.checked .item-checkbox::after { opacity: 1; }
+
+  .item-content {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .item-name {
+    font-size: 15px;
+    color: var(--ink);
+    transition: color 0.15s;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .item-row.checked .item-name {
+    color: var(--ink-faint);
+    text-decoration: line-through;
+    text-decoration-color: var(--green-mid);
+  }
+
+  .item-qty {
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-weight: 500;
+    margin-top: 1px;
+  }
+
+  /* INLINE EDIT */
+  .item-edit-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--ink);
+    width: 100%;
+  }
+
+  .item-qty-input {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--ink-faint);
+    width: 100%;
+  }
+
+  .item-actions {
+    display: flex;
+    gap: 4px;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+
+  .item-row:hover .item-actions { opacity: 1; }
+
+  .item-action-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    transition: background 0.15s;
+    color: var(--ink-light);
+  }
+
+  .item-action-btn:hover { background: var(--cream-dark); }
+  .item-action-btn.delete:hover { background: var(--rust-light); color: var(--rust); }
+
+  /* ADD ITEM ROW */
+  .add-item-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 16px;
+    gap: 10px;
+    border-top: 1px dashed var(--cream-dark);
+  }
+
+  .add-item-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    padding: 4px 0;
+  }
+
+  .add-item-input::placeholder { color: var(--ink-faint); font-style: italic; }
+
+  .add-item-btn {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    border: none;
+    background: var(--green);
+    color: white;
+    cursor: pointer;
+    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+
+  .add-item-btn:hover { background: #305540; }
+
+  /* PARSING INDICATOR */
+  .parsing-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(44,36,22,0.3);
+    z-index: 50;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(2px);
+  }
+
+  .parsing-overlay.visible { display: flex; }
+
+  .parsing-card {
+    background: var(--cream);
+    padding: 28px 36px;
+    border-radius: 16px;
+    text-align: center;
+    box-shadow: 0 8px 32px rgba(44,36,22,0.2);
+  }
+
+  .parsing-spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid var(--cream-dark);
+    border-top-color: var(--green);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 14px;
+  }
+
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .parsing-card p {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    color: var(--ink-light);
+    font-size: 15px;
+  }
+
+  /* ERROR */
+  .error-banner {
+    display: none;
+    margin: 12px 0;
+    padding: 10px 14px;
+    background: var(--rust-light);
+    border: 1px solid rgba(196,98,45,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--rust);
+  }
+
+  .error-banner.visible { display: block; }
+
+  /* MIC BUTTON */
+  .btn-mic {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid var(--ink-faint);
+    background: var(--cream);
+    color: var(--ink-light);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    position: relative;
+  }
+
+  .btn-mic:hover { border-color: var(--ink); color: var(--ink); }
+
+  .btn-mic.listening {
+    border-color: var(--rust);
+    background: var(--rust-light);
+    color: var(--rust);
+    animation: mic-pulse 1.2s ease-in-out infinite;
+  }
+
+  @keyframes mic-pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(196,98,45,0.3); }
+    50% { box-shadow: 0 0 0 8px rgba(196,98,45,0); }
+  }
+
+  .mic-status {
+    display: none;
+    margin-top: 10px;
+    padding: 8px 14px;
+    background: var(--rust-light);
+    border: 1px solid rgba(196,98,45,0.2);
+    border-radius: 8px;
+    font-size: 13px;
+    color: var(--rust);
+    align-items: center;
+    gap: 8px;
+  }
+
+  .mic-status.visible { display: flex; }
+
+  .mic-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--rust);
+    animation: mic-pulse-dot 0.8s ease-in-out infinite;
+    flex-shrink: 0;
+  }
+
+  @keyframes mic-pulse-dot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.7); }
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--ink-faint); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <header>
+    <div class="logo">Shop<span>Smart</span></div>
+    <div class="header-actions">
+      <button class="wake-lock-btn" id="wakeLockBtn" onclick="toggleWakeLock()">
+        <div class="wake-dot"></div>
+        <span id="wakeLockLabel">Screen on</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="toggle-bar">
+    <button class="toggle-btn active" id="tabNotepad" onclick="showView('notepad')">
+      <span class="toggle-icon">✏️</span> Free-type
+    </button>
+    <button class="toggle-btn" id="tabOrganised" onclick="showView('organised')">
+      <span class="toggle-icon">📋</span> Organised
+    </button>
+  </div>
+
+  <div class="views">
+    <!-- VIEW 1: NOTEPAD -->
+    <div class="notepad-view visible" id="notepadView">
+      <div class="notepad-card">
+        <div class="notepad-header">
+          <span class="notepad-label">Type your list naturally…</span>
+          <span class="char-hint">comma, new line, or "2x" for quantities</span>
+        </div>
+        <div class="notepad-lines">
+          <textarea 
+            id="notepadText" 
+            placeholder="milk, bread, 2x tins of tomatoes&#10;cheese&#10;500g chicken breast&#10;washing up liquid&#10;3 apples…"
+            spellcheck="true"
+          ></textarea>
+        </div>
+        <div class="notepad-footer">
+          <button class="btn btn-ghost" onclick="clearNotepad()">Clear</button>
+          <button class="btn-mic" id="micBtn" onclick="toggleMic()" title="Speak your list">🎤</button>
+          <button class="btn btn-primary" onclick="parseAndOrganise()">✨ Organise list</button>
+        </div>
+      </div>
+      <div class="mic-status" id="micStatus">
+        <div class="mic-dot"></div>
+        <span id="micStatusText">Listening… speak your items</span>
+      </div>
+      <div class="parse-status" id="parseStatus">
+        ✓ <span id="parseStatusText"></span>
+      </div>
+      <div class="error-banner" id="errorBanner"></div>
+    </div>
+
+    <!-- VIEW 2: ORGANISED -->
+    <div class="organised-view" id="organisedView">
+      <div class="list-meta">
+        <div class="list-count" id="listCount"></div>
+        <button class="clear-done-btn" onclick="clearDone()">Remove ticked</button>
+      </div>
+      <div id="categoryList">
+        <div class="empty-state">
+          <div class="empty-icon">🛒</div>
+          <p>Your organised list will appear here.<br>Type items in the Free-type tab first.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+<script>
+// ─── CATEGORIES ───────────────────────────────────────────────────────────────
+const CATEGORIES = [
+  { id: 'baby', name: 'Baby', emoji: '🍼' },
+  { id: 'medicine', name: 'Medicine', emoji: '💊' },
+  { id: 'bathroom', name: 'Bathroom', emoji: '🧴' },
+  { id: 'fruit_veg', name: 'Fruit & Veg', emoji: '🥦' },
+  { id: 'bakery', name: 'Bakery', emoji: '🍞' },
+  { id: 'meat', name: 'Meat', emoji: '🥩' },
+  { id: 'dairy', name: 'Dairy', emoji: '🥛' },
+  { id: 'drinks', name: 'Drinks', emoji: '🧃' },
+  { id: 'cereal_snacks', name: 'Cereal / Snacks', emoji: '🥣' },
+  { id: 'cupboard', name: 'Cupboard', emoji: '🫙' },
+  { id: 'frozen', name: 'Frozen', emoji: '🧊' },
+  { id: 'other', name: 'Other', emoji: '🛍️' },
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let items = []; // { id, name, qty, unit, category, checked }
+let wakeLock = null;
+let collapsedCategories = new Set();
+
+// ─── MICROPHONE / SPEECH RECOGNITION ─────────────────────────────────────────
+let recognition = null;
+let isListening = false;
+let micInterimSpan = '';
+
+function initRecognition() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) return null;
+
+  const r = new SpeechRecognition();
+  r.continuous = true;
+  r.interimResults = true;
+  r.lang = 'en-GB';
+  r.maxAlternatives = 1;
+
+  r.onstart = () => {
+    isListening = true;
+    document.getElementById('micBtn').classList.add('listening');
+    document.getElementById('micBtn').textContent = '⏹';
+    document.getElementById('micStatus').classList.add('visible');
+    document.getElementById('micStatusText').textContent = 'Listening… speak your items';
+  };
+
+  r.onend = () => {
+    isListening = false;
+    document.getElementById('micBtn').classList.remove('listening');
+    document.getElementById('micBtn').textContent = '🎤';
+    document.getElementById('micStatus').classList.remove('visible');
+    const ta = document.getElementById('notepadText');
+    ta.value = ta.value.trimEnd();
+    localStorage.setItem('shopsmart_notepad', ta.value);
+  };
+
+  r.onerror = (e) => {
+    isListening = false;
+    document.getElementById('micBtn').classList.remove('listening');
+    document.getElementById('micBtn').textContent = '🎤';
+    document.getElementById('micStatus').classList.remove('visible');
+    if (e.error === 'not-allowed') {
+      const err = document.getElementById('errorBanner');
+      err.textContent = 'Microphone access denied. Please allow mic access in your browser settings.';
+      err.classList.add('visible');
+    } else if (e.error !== 'aborted') {
+      const err = document.getElementById('errorBanner');
+      err.textContent = 'Microphone error: ' + e.error + '. Try again.';
+      err.classList.add('visible');
+    }
+  };
+
+  // Track the "committed" base text separately from interim
+  let committedText = '';
+
+  r.onresult = (e) => {
+    const ta = document.getElementById('notepadText');
+
+    // On first result, capture existing textarea content as base
+    if (committedText === '' && ta.value) {
+      committedText = ta.value.trimEnd();
+      if (committedText && !committedText.endsWith('\n')) committedText += '\n';
+    }
+
+    let interim = '';
+    for (let i = e.resultIndex; i < e.results.length; i++) {
+      const transcript = e.results[i][0].transcript.trim();
+      if (e.results[i].isFinal) {
+        // Each final result = one natural pause = one item per line
+        // Split on "and" only when it looks like a list separator (surrounded by items)
+        const parts = transcript
+          .split(/\s*\band\b\s*/i)
+          .map(s => s.replace(/[,\.]+$/, '').trim())
+          .filter(Boolean);
+        parts.forEach(part => { committedText += part + '\n'; });
+        interim = '';
+      } else {
+        interim = transcript;
+      }
+    }
+
+    ta.value = committedText + interim;
+    ta.scrollTop = ta.scrollHeight;
+    localStorage.setItem('shopsmart_notepad', ta.value);
+  };
+
+  return r;
+}
+
+function toggleMic() {
+  document.getElementById('errorBanner').classList.remove('visible');
+
+  if (!('SpeechRecognition' in window) && !('webkitSpeechRecognition' in window)) {
+    const err = document.getElementById('errorBanner');
+    err.textContent = 'Speech recognition not supported. Try Chrome or Safari on iOS 15+.';
+    err.classList.add('visible');
+    return;
+  }
+
+  if (isListening) {
+    recognition && recognition.stop();
+  } else {
+    recognition = initRecognition();
+    if (recognition) recognition.start();
+  }
+}
+
+// ─── WAKE LOCK ────────────────────────────────────────────────────────────────
+async function toggleWakeLock() {
+  const btn = document.getElementById('wakeLockBtn');
+  const label = document.getElementById('wakeLockLabel');
+  if (wakeLock) {
+    await wakeLock.release();
+    wakeLock = null;
+    btn.classList.remove('active');
+    label.textContent = 'Screen on';
+  } else {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      btn.classList.add('active');
+      label.textContent = 'Screen on';
+      wakeLock.addEventListener('release', () => {
+        wakeLock = null;
+        btn.classList.remove('active');
+      });
+    } catch (e) {
+      alert('Wake lock not supported in this browser. Try Chrome on Android.');
+    }
+  }
+}
+
+// Auto-enable wake lock on page load if supported
+(async () => {
+  try {
+    wakeLock = await navigator.wakeLock.request('screen');
+    document.getElementById('wakeLockBtn').classList.add('active');
+    wakeLock.addEventListener('release', () => {
+      wakeLock = null;
+      document.getElementById('wakeLockBtn').classList.remove('active');
+    });
+  } catch(e) {}
+})();
+
+// Re-acquire wake lock on visibility change
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState === 'visible' && !wakeLock) {
+    try {
+      wakeLock = await navigator.wakeLock.request('screen');
+      document.getElementById('wakeLockBtn').classList.add('active');
+    } catch(e) {}
+  }
+});
+
+// ─── VIEW TOGGLE ──────────────────────────────────────────────────────────────
+function showView(view) {
+  document.getElementById('notepadView').classList.toggle('visible', view === 'notepad');
+  document.getElementById('organisedView').classList.toggle('visible', view === 'organised');
+  document.getElementById('tabNotepad').classList.toggle('active', view === 'notepad');
+  document.getElementById('tabOrganised').classList.toggle('active', view === 'organised');
+  if (view === 'organised') renderOrganised();
+}
+
+// ─── NOTEPAD ──────────────────────────────────────────────────────────────────
+function clearNotepad() {
+  document.getElementById('notepadText').value = '';
+  document.getElementById('parseStatus').classList.remove('visible');
+  document.getElementById('errorBanner').classList.remove('visible');
+}
+
+// ─── LOCAL KEYWORD CATEGORISER ───────────────────────────────────────────────
+const CATEGORY_KEYWORDS = {
+  baby: ['nappy','nappies','pampers','huggies','formula','baby food','baby wipe','baby milk','baby','sudocrem','calpol','infacare','cow & gate','aptamil'],
+  medicine: ['paracetamol','ibuprofen','aspirin','vitamin','supplement','antihistamine','plaster','bandage','antiseptic','cold & flu','lemsip','strepsil','beechams','gaviscon','rennie','lotion','cream','ointment','medicine','tablet','capsule','syrup','inhaler','pharmacy'],
+  bathroom: ['shampoo','conditioner','shower gel','body wash','soap','toothpaste','toothbrush','mouthwash','floss','deodorant','antiperspirant','razor','shaving','moisturiser','face wash','cotton wool','cotton pad','toilet roll','toilet paper','loo roll','tissue','wipe','sanitary','tampon','pad','hairspray','hair gel','nail','perfume','aftershave','skincare','suncream','sunscreen'],
+  fruit_veg: ['apple','pear','banana','orange','lemon','lime','grape','strawberry','raspberry','blueberry','cherry','mango','melon','pineapple','kiwi','avocado','tomato','potato','onion','garlic','carrot','broccoli','cauliflower','spinach','lettuce','salad','cucumber','pepper','courgette','aubergine','mushroom','celery','leek','parsnip','turnip','cabbage','kale','beetroot','sweetcorn','peas','beans','sprout','herb','coriander','parsley','basil','mint','rosemary','thyme','ginger','chilli','sweet potato','butternut','squash','asparagus','artichoke','fennel','radish','spring onion','shallot'],
+  bakery: ['bread','loaf','roll','bap','wrap','tortilla','pitta','naan','bagel','croissant','muffin','scone','crumpet','brioche','baguette','sourdough','focaccia','cake','pastry','doughnut','cookie','brownie'],
+  meat: ['chicken','beef','pork','lamb','turkey','duck','mince','steak','chop','fillet','breast','thigh','sausage','bacon','ham','gammon','salami','chorizo','pepperoni','prosciutto','fish','salmon','cod','tuna','haddock','mackerel','sea bass','prawn','shrimp','crab','lobster','scallop','mussel','sardine','anchovy','trout','tilapia','pollock','deli','meat'],
+  dairy: ['milk','cheese','cheddar','mozzarella','brie','camembert','stilton','parmesan','feta','halloumi','gouda','edam','cream cheese','cottage cheese','yogurt','yoghurt','butter','margarine','spread','cream','creme fraiche','sour cream','egg','oat milk','almond milk','soya milk','coconut milk','dairy'],
+  drinks: ['water','sparkling','juice','orange juice','apple juice','squash','cordial','lemonade','cola','coke','pepsi','fizzy','beer','lager','ale','cider','wine','prosecco','champagne','spirits','gin','vodka','whisky','rum','coffee','tea','herbal tea','hot chocolate','milkshake','smoothie','energy drink','sports drink','tonic'],
+  cereal_snacks: ['cereal','cornflake','weetabix','shreddies','granola','muesli','porridge','oats','cereal bar','flapjack','crisp','pringles','popcorn','pretzel','cracker','rice cake','biscuit','digestive','hobnob','rich tea','custard cream','bourbon','oreo','chocolate','kitkat','twix','snickers','haribo','sweet','candy','nut','almond','cashew','walnut','peanut','pistachio','trail mix','snack'],
+  cupboard: ['pasta','spaghetti','penne','fusilli','tagliatelle','lasagne','rice','noodle','flour','sugar','salt','pepper','oil','olive oil','vegetable oil','vinegar','balsamic','soy sauce','worcestershire','ketchup','tomato sauce','mayo','mayonnaise','mustard','salad dressing','hot sauce','pesto','tomato puree','tin','tinned','canned','can','chopped tomato','tom','toms','baked bean','chickpea','lentil','kidney bean','soup','stock','stock cube','bouillon','gravy','yeast extract','marmite','jam','marmalade','honey','syrup','spread','peanut butter','nutella','coconut','curry paste','curry powder','spice','paprika','cumin','turmeric','cinnamon','oregano','mixed herbs','bay leaf','chilli flake','breadcrumb','stuffing','washing up','fairy','washing powder','laundry','fabric','bleach','cleaner','spray','bin bag','bin liner','foil','cling film','baking paper','kitchen roll'],
+  frozen: ['frozen','ice cream','sorbet','gelato','chips','oven chips','waffle','ice lolly','fish finger','pizza','ready meal','frozen pea','frozen veg','frozen berry','ice'],
+};
+
+function guessCategory(name) {
+  const lower = name.toLowerCase();
+  for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+    for (const kw of keywords) {
+      if (lower.includes(kw)) return cat;
+    }
+  }
+  return 'other';
+}
+
+function parseQtyFromToken(token) {
+  // Patterns: "2x", "500g", "2kg", "3", "1.5l", "2 pints"
+  const units = ['kg','g','ml','l','ltr','litre','litres','pint','pints','oz','lb','lbs','pack','packs','bag','bags','tin','tins','can','cans','bottle','bottles','jar','jars','bunch','loaf','loaves','box','boxes'];
+  
+  // "2x item" or "x2"
+  let m = token.match(/^(\d+(?:\.\d+)?)\s*x$/i);
+  if (m) return { qty: parseFloat(m[1]), unit: 'x', rest: '' };
+
+  // "500g" "2kg" "1.5l"
+  for (const u of units) {
+    const re = new RegExp(`^(\\d+(?:\\.\\d+)?)\\s*${u}s?$`, 'i');
+    m = token.match(re);
+    if (m) return { qty: parseFloat(m[1]), unit: u, rest: '' };
+  }
+
+  // bare number
+  m = token.match(/^(\d+(?:\.\d+)?)$/);
+  if (m) return { qty: parseFloat(m[1]), unit: null, rest: '' };
+
+  return null;
+}
+
+function parseRawText(text) {
+  // Split on commas or newlines
+  const rawItems = text.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
+  const parsed = [];
+
+  for (let raw of rawItems) {
+    let qty = null, unit = null, name = raw;
+
+    // Try leading quantity: "2x milk", "500g chicken", "2 pints milk", "3 tins tomatoes"
+    const tokens = raw.split(/\s+/);
+    if (tokens.length >= 2) {
+      const first = tokens[0];
+      const second = tokens[1];
+
+      // "2x" as first token
+      let q = parseQtyFromToken(first);
+      if (q) {
+        qty = q.qty; unit = q.unit;
+        name = tokens.slice(1).join(' ');
+      } else {
+        // "2 pints", "3 tins", "500 g"
+        const unitWords = ['g','kg','ml','l','ltr','pint','pints','oz','lb','lbs','pack','packs','bag','bags','tin','tins','can','cans','bottle','bottles','jar','jars','bunch','loaf','loaves','box','boxes','x'];
+        const numMatch = first.match(/^(\d+(?:\.\d+)?)$/);
+        if (numMatch && unitWords.some(u => second.toLowerCase().startsWith(u))) {
+          qty = parseFloat(numMatch[1]);
+          unit = second.toLowerCase().replace(/s$/, '');
+          name = tokens.slice(2).join(' ') || second;
+          if (!tokens[2]) name = second; // "3 apples" — unit becomes part of name
+          // If no name left, the "unit" was actually the item
+          if (!tokens[2]) { name = `${second}`; unit = null; }
+        } else if (numMatch && tokens.length > 2) {
+          // "3 tin toms" — qty + rest
+          qty = parseFloat(numMatch[1]); unit = null;
+          name = tokens.slice(1).join(' ');
+        }
+      }
+    } else {
+      // Single token — try "500g" fused
+      const q = parseQtyFromToken(tokens[0]);
+      if (q && q.rest !== undefined) { qty = q.qty; unit = q.unit; }
+    }
+
+    // Clean up name
+    name = name.trim();
+    if (!name) name = raw;
+
+    // Capitalise first letter
+    name = name.charAt(0).toUpperCase() + name.slice(1);
+
+    parsed.push({ name, qty, unit, category: guessCategory(name) });
+  }
+
+  return parsed;
+}
+
+function parseAndOrganise() {
+  const text = document.getElementById('notepadText').value.trim();
+  if (!text) return;
+
+  document.getElementById('errorBanner').classList.remove('visible');
+
+  const parsed = parseRawText(text);
+
+  const existingNames = new Set(items.map(i => i.name.toLowerCase()));
+  let added = 0;
+  parsed.forEach(p => {
+    const key = p.name.toLowerCase();
+    if (!existingNames.has(key)) {
+      items.push({
+        id: Date.now() + Math.random(),
+        name: p.name,
+        qty: p.qty,
+        unit: p.unit,
+        category: p.category,
+        checked: false
+      });
+      existingNames.add(key);
+      added++;
+    }
+  });
+
+  const status = document.getElementById('parseStatus');
+  status.classList.add('visible');
+  document.getElementById('parseStatusText').textContent =
+    `${added} item${added !== 1 ? 's' : ''} added — ${items.length} total`;
+
+  renderOrganised();
+  showView('organised');
+}
+
+// ─── ORGANISED VIEW ───────────────────────────────────────────────────────────
+function renderOrganised() {
+  const container = document.getElementById('categoryList');
+  const total = items.length;
+  const done = items.filter(i => i.checked).length;
+
+  document.getElementById('listCount').innerHTML = 
+    total === 0 ? '' : `<strong>${total - done}</strong> remaining · ${done} ticked`;
+
+  if (total === 0) {
+    container.innerHTML = `
+      <div class="empty-state">
+        <div class="empty-icon">🛒</div>
+        <p>Your organised list will appear here.<br>Type items in the Free-type tab first.</p>
+      </div>`;
+    return;
+  }
+
+  // Group by category
+  const groups = {};
+  CATEGORIES.forEach(c => { groups[c.id] = []; });
+  items.forEach(item => {
+    if (groups[item.category]) groups[item.category].push(item);
+    else groups['other'].push(item);
+  });
+
+  let html = '';
+  CATEGORIES.forEach(cat => {
+    const catItems = groups[cat.id];
+    if (catItems.length === 0) return;
+
+    const allDone = catItems.every(i => i.checked);
+    const doneCt = catItems.filter(i => i.checked).length;
+    const collapsed = collapsedCategories.has(cat.id);
+    const badgeClass = allDone ? 'done' : '';
+
+    html += `
+    <div class="category-group" id="cat_${cat.id}">
+      <div class="category-header" onclick="toggleCategory('${cat.id}')">
+        <span class="category-emoji">${cat.emoji}</span>
+        <span class="category-name">${cat.name}</span>
+        <span class="category-badge ${badgeClass}">${doneCt}/${catItems.length}</span>
+        <span class="category-toggle ${collapsed ? 'collapsed' : ''}">▾</span>
+      </div>
+      <div class="category-items ${collapsed ? 'collapsed' : ''}" id="items_${cat.id}">
+        ${catItems.map(item => renderItem(item)).join('')}
+        <div class="add-item-row">
+          <input class="add-item-input" type="text" placeholder="Add to ${cat.name.toLowerCase()}…"
+            onkeydown="handleAddItem(event, '${cat.id}', this)" />
+          <button class="add-item-btn" onclick="addItemToCategory('${cat.id}', this.previousElementSibling)">+</button>
+        </div>
+      </div>
+    </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function renderItem(item) {
+  const qtyText = item.qty ? `${item.qty}${item.unit ? ' ' + item.unit : ''}` : (item.unit || '');
+  return `
+  <div class="item-row ${item.checked ? 'checked' : ''}" id="item_${item.id}">
+    <div class="item-checkbox" onclick="toggleItem('${item.id}')"></div>
+    <div class="item-content">
+      <input class="item-edit-input ${item.checked ? 'item-name' : ''}" 
+        value="${escHtml(item.name)}" 
+        style="${item.checked ? 'color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--green-mid)' : ''}"
+        onblur="updateItemName('${item.id}', this.value)"
+        onkeydown="if(event.key==='Enter')this.blur()" />
+      ${qtyText ? `<input class="item-qty-input" value="${escHtml(qtyText)}" 
+        onblur="updateItemQty('${item.id}', this.value)"
+        onkeydown="if(event.key==='Enter')this.blur()" />` : 
+        `<input class="item-qty-input" placeholder="qty / unit" 
+        onblur="updateItemQty('${item.id}', this.value)"
+        onkeydown="if(event.key==='Enter')this.blur()" />`}
+    </div>
+    <div class="item-actions">
+      <button class="item-action-btn delete" onclick="deleteItem('${item.id}')" title="Delete">✕</button>
+    </div>
+  </div>`;
+}
+
+function escHtml(s) {
+  return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── ITEM ACTIONS ─────────────────────────────────────────────────────────────
+function toggleItem(id) {
+  const item = items.find(i => String(i.id) === String(id));
+  if (item) { item.checked = !item.checked; renderOrganised(); }
+}
+
+function updateItemName(id, val) {
+  const item = items.find(i => String(i.id) === String(id));
+  if (item && val.trim()) item.name = val.trim();
+}
+
+function updateItemQty(id, val) {
+  const item = items.find(i => String(i.id) === String(id));
+  if (!item) return;
+  val = val.trim();
+  if (!val) { item.qty = null; item.unit = null; return; }
+  const m = val.match(/^([\d.]+)\s*(.*)$/);
+  if (m) { item.qty = parseFloat(m[1]); item.unit = m[2].trim() || null; }
+  else { item.qty = null; item.unit = val; }
+}
+
+function deleteItem(id) {
+  items = items.filter(i => String(i.id) !== String(id));
+  renderOrganised();
+}
+
+function clearDone() {
+  items = items.filter(i => !i.checked);
+  renderOrganised();
+}
+
+function toggleCategory(catId) {
+  if (collapsedCategories.has(catId)) collapsedCategories.delete(catId);
+  else collapsedCategories.add(catId);
+  renderOrganised();
+}
+
+function handleAddItem(event, catId, input) {
+  if (event.key === 'Enter') addItemToCategory(catId, input);
+}
+
+function addItemToCategory(catId, input) {
+  const val = input.value.trim();
+  if (!val) return;
+  // Parse qty from input like "2x milk" or "500g chicken"
+  let name = val, qty = null, unit = null;
+  const m1 = val.match(/^(\d+)\s*x\s+(.+)$/i);
+  const m2 = val.match(/^([\d.]+)\s*(g|kg|ml|l|oz|lb|pints?)\s+(.+)$/i);
+  if (m1) { qty = parseInt(m1[1]); unit = 'x'; name = m1[2]; }
+  else if (m2) { qty = parseFloat(m2[1]); unit = m2[2]; name = m2[3]; }
+
+  items.push({ id: Date.now() + Math.random(), name, qty, unit, category: catId, checked: false });
+  input.value = '';
+  renderOrganised();
+}
+
+// Load notepad from localStorage on startup
+window.addEventListener('load', () => {
+  const saved = localStorage.getItem('shopsmart_notepad');
+  if (saved) document.getElementById('notepadText').value = saved;
+  const savedItems = localStorage.getItem('shopsmart_items');
+  if (savedItems) { try { items = JSON.parse(savedItems); } catch(e) {} }
+});
+
+// Save on changes
+document.getElementById('notepadText').addEventListener('input', () => {
+  localStorage.setItem('shopsmart_notepad', document.getElementById('notepadText').value);
+});
+
+setInterval(() => {
+  localStorage.setItem('shopsmart_items', JSON.stringify(items));
+}, 3000);
+</script>
+</body>
+</html>
