@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -24,675 +25,702 @@
     --radius: 12px;
   }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--cream-dark);
-    color: var(--ink);
-    min-height: 100vh;
-    background-image: 
-      radial-gradient(ellipse at 20% 0%, rgba(61,107,74,0.06) 0%, transparent 60%),
-      radial-gradient(ellipse at 80% 100%, rgba(196,98,45,0.05) 0%, transparent 60%);
-  }
-
-  .app {
-    max-width: 480px;
-    margin: 0 auto;
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-  }
-
-  /* HEADER */
-  header {
-    padding: 20px 20px 0;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .logo {
-    font-family: 'Lora', serif;
-    font-size: 22px;
-    font-weight: 600;
-    color: var(--ink);
-    letter-spacing: -0.3px;
-  }
-
-  .logo span {
-    color: var(--green);
-  }
-
-  .header-actions {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-
-  .wake-lock-btn {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    padding: 6px 12px;
-    border-radius: 20px;
-    border: 1.5px solid var(--ink-faint);
-    background: transparent;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: var(--ink-light);
-    transition: all 0.2s;
-  }
-
-  .wake-lock-btn.active {
-    border-color: var(--green);
-    background: var(--green-light);
-    color: var(--green);
-  }
-
-  .wake-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--ink-faint);
-    transition: background 0.2s;
-  }
-
-  .wake-lock-btn.active .wake-dot {
-    background: var(--green);
-    animation: pulse 2s infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.4; }
-  }
-
-  /* TOGGLE */
-  .toggle-bar {
-    margin: 16px 20px 0;
-    background: var(--cream);
-    border-radius: 30px;
-    padding: 4px;
-    display: flex;
-    box-shadow: inset 0 1px 3px rgba(44,36,22,0.1);
-  }
-
-  .toggle-btn {
-    flex: 1;
-    padding: 10px;
-    border: none;
-    background: transparent;
-    border-radius: 26px;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
-    color: var(--ink-light);
-    transition: all 0.25s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 7px;
-  }
-
-  .toggle-btn.active {
-    background: var(--ink);
-    color: var(--cream);
-    font-weight: 500;
-    box-shadow: 0 1px 6px rgba(44,36,22,0.2);
-  }
-
-  .toggle-icon { font-size: 15px; }
-
-  /* MAIN CONTENT */
-  .views {
-    flex: 1;
-    padding: 16px 20px 100px;
-    overflow-y: auto;
-  }
-
-  /* VIEW 1 — NOTEPAD */
-  .notepad-view { display: none; }
-  .notepad-view.visible { display: block; }
-
-  .notepad-card {
-    background: var(--cream);
-    border-radius: var(--radius);
-    box-shadow: var(--paper-shadow);
-    overflow: hidden;
-  }
-
-  .notepad-header {
-    padding: 14px 18px;
-    border-bottom: 1px solid var(--cream-dark);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  .notepad-label {
-    font-family: 'Lora', serif;
-    font-style: italic;
-    font-size: 14px;
-    color: var(--ink-light);
-  }
-
-  .char-hint {
-    font-size: 12px;
-    color: var(--ink-faint);
-  }
-
-  .notepad-lines {
-    position: relative;
-  }
-
-  textarea {
-    width: 100%;
-    min-height: 360px;
-    padding: 18px 20px;
-    border: none;
-    background: transparent;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    line-height: 2;
-    color: var(--ink);
-    resize: none;
-    outline: none;
-    display: block;
-    background-image: repeating-linear-gradient(
-      transparent,
-      transparent calc(2em - 1px),
-      rgba(176,160,144,0.18) calc(2em - 1px),
-      rgba(176,160,144,0.18) 2em
-    );
-    background-size: 100% 2em;
-  }
-
-  textarea::placeholder {
-    color: var(--ink-faint);
-    font-style: italic;
-  }
-
-  .notepad-footer {
-    padding: 14px 18px;
-    border-top: 1px solid var(--cream-dark);
-    display: flex;
-    gap: 10px;
-  }
-
-  .btn {
-    padding: 10px 20px;
-    border-radius: 8px;
-    border: none;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s;
-  }
-
-  .btn-primary {
-    background: var(--green);
-    color: white;
-    flex: 1;
-  }
-
-  .btn-primary:hover { background: #305540; }
-
-  .btn-ghost {
-    background: transparent;
-    color: var(--ink-light);
-    border: 1.5px solid var(--cream-dark);
-  }
-
-  .btn-ghost:hover {
-    border-color: var(--ink-faint);
-    color: var(--ink);
-  }
-
-  /* PARSING STATUS */
-  .parse-status {
-    display: none;
-    margin-top: 12px;
-    padding: 10px 14px;
-    background: var(--green-light);
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--green);
-    border: 1px solid rgba(61,107,74,0.15);
-    align-items: center;
-    gap: 8px;
-  }
-
-  .parse-status.visible { display: flex; }
-
-  /* VIEW 2 — ORGANISED */
-  .organised-view { display: none; }
-  .organised-view.visible { display: block; }
-
-  .list-meta {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 14px;
-  }
-
-  .list-count {
-    font-size: 13px;
-    color: var(--ink-light);
-  }
-
-  .list-count strong { color: var(--ink); }
-
-  .clear-done-btn {
-    font-size: 13px;
-    color: var(--rust);
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-family: 'DM Sans', sans-serif;
-    padding: 4px 0;
-  }
-
-  .empty-state {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--ink-faint);
-  }
-
-  .empty-icon { font-size: 48px; margin-bottom: 12px; }
-
-  .empty-state p {
-    font-family: 'Lora', serif;
-    font-style: italic;
-    font-size: 15px;
-  }
-
-  /* CATEGORY GROUPS */
-  .category-group {
-    margin-bottom: 18px;
-    background: var(--cream);
-    border-radius: var(--radius);
-    box-shadow: var(--paper-shadow);
-    overflow: hidden;
-  }
-
-  .category-header {
-    padding: 12px 16px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: var(--cream);
-    border-bottom: 1px solid var(--cream-dark);
-    cursor: pointer;
-    user-select: none;
-  }
-
-  .category-emoji { font-size: 17px; }
-
-  .category-name {
-    font-family: 'Lora', serif;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--ink);
-    flex: 1;
-  }
-
-  .category-badge {
-    font-size: 11px;
-    font-weight: 500;
-    color: var(--ink-faint);
-    background: var(--cream-dark);
-    padding: 2px 8px;
-    border-radius: 10px;
-  }
-
-  .category-badge.done {
-    color: var(--green);
-    background: var(--green-light);
-  }
-
-  .category-toggle {
-    font-size: 12px;
-    color: var(--ink-faint);
-    transition: transform 0.2s;
-  }
-
-  .category-toggle.collapsed { transform: rotate(-90deg); }
-
-  .category-items { }
-
-  .category-items.collapsed { display: none; }
-
-  /* ITEM ROW */
-  .item-row {
-    display: flex;
-    align-items: center;
-    padding: 13px 16px;
-    border-bottom: 1px solid var(--cream-dark);
-    gap: 12px;
-    transition: background 0.15s;
-  }
-
-  .item-row:last-child { border-bottom: none; }
-  .item-row:hover { background: rgba(176,160,144,0.06); }
-
-  .item-row.checked {
-    background: rgba(61,107,74,0.04);
-  }
-
-  /* CUSTOM CHECKBOX */
-  .item-checkbox {
-    width: 22px;
-    height: 22px;
-    border-radius: 6px;
-    border: 2px solid var(--ink-faint);
-    background: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.15s;
-  }
-
-  .item-row.checked .item-checkbox {
-    background: var(--green);
-    border-color: var(--green);
-  }
-
-  .item-checkbox::after {
-    content: '';
-    width: 6px;
-    height: 10px;
-    border: 2px solid white;
-    border-top: none;
-    border-left: none;
-    transform: rotate(45deg) translate(-1px, -1px);
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-
-  .item-row.checked .item-checkbox::after { opacity: 1; }
-
-  .item-content {
-    flex: 1;
-    min-width: 0;
-  }
-
-  .item-name {
-    font-size: 15px;
-    color: var(--ink);
-    transition: color 0.15s;
-    display: block;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  .item-row.checked .item-name {
-    color: var(--ink-faint);
-    text-decoration: line-through;
-    text-decoration-color: var(--green-mid);
-  }
-
-  .item-qty {
-    font-size: 12px;
-    color: var(--ink-faint);
-    font-weight: 500;
-    margin-top: 1px;
-  }
-
-  /* INLINE EDIT */
-  .item-edit-input {
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    color: var(--ink);
-    width: 100%;
-  }
-
-  .item-qty-input {
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 12px;
-    color: var(--ink-faint);
-    width: 100%;
-  }
-
-  .item-actions {
-    display: flex;
-    gap: 4px;
-    opacity: 0;
-    transition: opacity 0.15s;
-  }
-
-  .item-row:hover .item-actions { opacity: 1; }
-
-  .item-action-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    border: none;
-    background: transparent;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 14px;
-    transition: background 0.15s;
-    color: var(--ink-light);
-  }
-
-  .item-action-btn:hover { background: var(--cream-dark); }
-  .item-action-btn.delete:hover { background: var(--rust-light); color: var(--rust); }
-
-  /* ADD ITEM ROW */
-  .add-item-row {
-    display: flex;
-    align-items: center;
-    padding: 10px 16px;
-    gap: 10px;
-    border-top: 1px dashed var(--cream-dark);
-  }
-
-  .add-item-input {
-    flex: 1;
-    border: none;
-    outline: none;
-    background: transparent;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 14px;
-    color: var(--ink);
-    padding: 4px 0;
-  }
-
-  .add-item-input::placeholder { color: var(--ink-faint); font-style: italic; }
-
-  .add-item-btn {
-    width: 28px;
-    height: 28px;
-    border-radius: 6px;
-    border: none;
-    background: var(--green);
-    color: white;
-    cursor: pointer;
-    font-size: 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: background 0.15s;
-  }
-
-  .add-item-btn:hover { background: #305540; }
-
-  /* PARSING INDICATOR */
-  .parsing-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(44,36,22,0.3);
-    z-index: 50;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(2px);
-  }
-
-  .parsing-overlay.visible { display: flex; }
-
-  .parsing-card {
-    background: var(--cream);
-    padding: 28px 36px;
-    border-radius: 16px;
-    text-align: center;
-    box-shadow: 0 8px 32px rgba(44,36,22,0.2);
-  }
-
-  .parsing-spinner {
-    width: 36px;
-    height: 36px;
-    border: 3px solid var(--cream-dark);
-    border-top-color: var(--green);
-    border-radius: 50%;
-    animation: spin 0.8s linear infinite;
-    margin: 0 auto 14px;
-  }
-
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .parsing-card p {
-    font-family: 'Lora', serif;
-    font-style: italic;
-    color: var(--ink-light);
-    font-size: 15px;
-  }
-
-  /* ERROR */
-  .error-banner {
-    display: none;
-    margin: 12px 0;
-    padding: 10px 14px;
-    background: var(--rust-light);
-    border: 1px solid rgba(196,98,45,0.2);
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--rust);
-  }
-
-  .error-banner.visible { display: block; }
-
-  /* MIC BUTTON */
-  .btn-mic {
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
-    border: 2px solid var(--ink-faint);
-    background: var(--cream);
-    color: var(--ink-light);
-    font-size: 18px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    transition: all 0.2s;
-    position: relative;
-  }
-
-  .btn-mic:hover { border-color: var(--ink); color: var(--ink); }
-
-  .btn-mic.listening {
-    border-color: var(--rust);
-    background: var(--rust-light);
-    color: var(--rust);
-    animation: mic-pulse 1.2s ease-in-out infinite;
-  }
-
-  @keyframes mic-pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(196,98,45,0.3); }
-    50% { box-shadow: 0 0 0 8px rgba(196,98,45,0); }
-  }
-
-  .mic-status {
-    display: none;
-    margin-top: 10px;
-    padding: 8px 14px;
-    background: var(--rust-light);
-    border: 1px solid rgba(196,98,45,0.2);
-    border-radius: 8px;
-    font-size: 13px;
-    color: var(--rust);
-    align-items: center;
-    gap: 8px;
-  }
-
-  .mic-status.visible { display: flex; }
-
-  .mic-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--rust);
-    animation: mic-pulse-dot 0.8s ease-in-out infinite;
-    flex-shrink: 0;
-  }
-
-  @keyframes mic-pulse-dot {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.4; transform: scale(0.7); }
-  }
-
-  /* NUCLEAR BUTTON */
-  .nuclear-btn {
-    width: 100%;
-    padding: 18px;
-    margin-top: 24px;
-    border-radius: 14px;
-    border: none;
-    background: linear-gradient(180deg, #e03030 0%, #b01010 100%);
-    color: white;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
-    letter-spacing: 0.3px;
-    cursor: pointer;
-    box-shadow: 0 4px 0 #7a0000, 0 6px 20px rgba(176,16,16,0.4);
-    transition: all 0.1s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-    text-transform: uppercase;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .nuclear-btn:active {
-    transform: translateY(3px);
-    box-shadow: 0 1px 0 #7a0000, 0 2px 8px rgba(176,16,16,0.3);
-  }
-
-  .nuclear-btn::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 50%;
-    background: rgba(255,255,255,0.08);
-    border-radius: 14px 14px 0 0;
-  }
-
-  /* SCROLLBAR */
-  ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: var(--ink-faint); border-radius: 4px; }
+- { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+font-family: ‘DM Sans’, sans-serif;
+background: var(–cream-dark);
+color: var(–ink);
+min-height: 100vh;
+background-image:
+radial-gradient(ellipse at 20% 0%, rgba(61,107,74,0.06) 0%, transparent 60%),
+radial-gradient(ellipse at 80% 100%, rgba(196,98,45,0.05) 0%, transparent 60%);
+}
+
+.app {
+max-width: 480px;
+margin: 0 auto;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
+
+/* HEADER */
+header {
+padding: 20px 20px 0;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.logo {
+font-family: ‘Lora’, serif;
+font-size: 22px;
+font-weight: 600;
+color: var(–ink);
+letter-spacing: -0.3px;
+}
+
+.logo span {
+color: var(–green);
+}
+
+.header-actions {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.wake-lock-btn {
+display: flex;
+align-items: center;
+gap: 6px;
+padding: 6px 12px;
+border-radius: 20px;
+border: 1.5px solid var(–ink-faint);
+background: transparent;
+cursor: pointer;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 12px;
+color: var(–ink-light);
+transition: all 0.2s;
+}
+
+.wake-lock-btn.active {
+border-color: var(–green);
+background: var(–green-light);
+color: var(–green);
+}
+
+.wake-dot {
+width: 7px;
+height: 7px;
+border-radius: 50%;
+background: var(–ink-faint);
+transition: background 0.2s;
+}
+
+.wake-lock-btn.active .wake-dot {
+background: var(–green);
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.4; }
+}
+
+/* TOGGLE */
+.toggle-bar {
+margin: 16px 20px 0;
+background: var(–cream);
+border-radius: 30px;
+padding: 4px;
+display: flex;
+box-shadow: inset 0 1px 3px rgba(44,36,22,0.1);
+}
+
+.toggle-btn {
+flex: 1;
+padding: 10px;
+border: none;
+background: transparent;
+border-radius: 26px;
+cursor: pointer;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 14px;
+font-weight: 400;
+color: var(–ink-light);
+transition: all 0.25s;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 7px;
+}
+
+.toggle-btn.active {
+background: var(–ink);
+color: var(–cream);
+font-weight: 500;
+box-shadow: 0 1px 6px rgba(44,36,22,0.2);
+}
+
+.toggle-icon { font-size: 15px; }
+
+/* MAIN CONTENT */
+.views {
+flex: 1;
+padding: 16px 20px 100px;
+overflow-y: auto;
+}
+
+/* VIEW 1 — NOTEPAD */
+.notepad-view { display: none; }
+.notepad-view.visible { display: block; }
+
+.notepad-card {
+background: var(–cream);
+border-radius: var(–radius);
+box-shadow: var(–paper-shadow);
+overflow: hidden;
+}
+
+.notepad-header {
+padding: 14px 18px;
+border-bottom: 1px solid var(–cream-dark);
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.notepad-label {
+font-family: ‘Lora’, serif;
+font-style: italic;
+font-size: 14px;
+color: var(–ink-light);
+}
+
+.char-hint {
+font-size: 12px;
+color: var(–ink-faint);
+}
+
+.notepad-lines {
+position: relative;
+}
+
+textarea {
+width: 100%;
+min-height: 360px;
+padding: 18px 20px;
+border: none;
+background: transparent;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 16px;
+line-height: 2;
+color: var(–ink);
+resize: none;
+outline: none;
+display: block;
+background-image: repeating-linear-gradient(
+transparent,
+transparent calc(2em - 1px),
+rgba(176,160,144,0.18) calc(2em - 1px),
+rgba(176,160,144,0.18) 2em
+);
+background-size: 100% 2em;
+}
+
+textarea::placeholder {
+color: var(–ink-faint);
+font-style: italic;
+}
+
+.notepad-footer {
+padding: 14px 18px;
+border-top: 1px solid var(–cream-dark);
+display: flex;
+gap: 10px;
+}
+
+.btn {
+padding: 10px 20px;
+border-radius: 8px;
+border: none;
+cursor: pointer;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 14px;
+font-weight: 500;
+transition: all 0.2s;
+}
+
+.btn-primary {
+background: var(–green);
+color: white;
+flex: 1;
+}
+
+.btn-primary:hover { background: #305540; }
+
+.btn-ghost {
+background: transparent;
+color: var(–ink-light);
+border: 1.5px solid var(–cream-dark);
+}
+
+.btn-ghost:hover {
+border-color: var(–ink-faint);
+color: var(–ink);
+}
+
+/* PARSING STATUS */
+.parse-status {
+display: none;
+margin-top: 12px;
+padding: 10px 14px;
+background: var(–green-light);
+border-radius: 8px;
+font-size: 13px;
+color: var(–green);
+border: 1px solid rgba(61,107,74,0.15);
+align-items: center;
+gap: 8px;
+}
+
+.parse-status.visible { display: flex; }
+
+/* VIEW 2 — ORGANISED */
+.organised-view { display: none; }
+.organised-view.visible { display: block; }
+
+.list-meta {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 14px;
+}
+
+.list-count {
+font-size: 13px;
+color: var(–ink-light);
+}
+
+.list-count strong { color: var(–ink); }
+
+.clear-done-btn {
+font-size: 13px;
+color: var(–rust);
+background: none;
+border: none;
+cursor: pointer;
+font-family: ‘DM Sans’, sans-serif;
+padding: 4px 0;
+}
+
+.empty-state {
+text-align: center;
+padding: 60px 20px;
+color: var(–ink-faint);
+}
+
+.empty-icon { font-size: 48px; margin-bottom: 12px; }
+
+.empty-state p {
+font-family: ‘Lora’, serif;
+font-style: italic;
+font-size: 15px;
+}
+
+/* CATEGORY GROUPS */
+.category-group {
+margin-bottom: 18px;
+background: var(–cream);
+border-radius: var(–radius);
+box-shadow: var(–paper-shadow);
+overflow: hidden;
+}
+
+.category-header {
+padding: 12px 16px;
+display: flex;
+align-items: center;
+gap: 10px;
+background: var(–cream);
+border-bottom: 1px solid var(–cream-dark);
+cursor: pointer;
+user-select: none;
+}
+
+.category-emoji { font-size: 17px; }
+
+.category-name {
+font-family: ‘Lora’, serif;
+font-size: 14px;
+font-weight: 600;
+color: var(–ink);
+flex: 1;
+}
+
+.category-badge {
+font-size: 11px;
+font-weight: 500;
+color: var(–ink-faint);
+background: var(–cream-dark);
+padding: 2px 8px;
+border-radius: 10px;
+}
+
+.category-badge.done {
+color: var(–green);
+background: var(–green-light);
+}
+
+.category-toggle {
+font-size: 12px;
+color: var(–ink-faint);
+transition: transform 0.2s;
+}
+
+.category-toggle.collapsed { transform: rotate(-90deg); }
+
+.category-items { }
+
+.category-items.collapsed { display: none; }
+
+/* ITEM ROW */
+.item-row {
+display: flex;
+align-items: center;
+padding: 13px 16px;
+border-bottom: 1px solid var(–cream-dark);
+gap: 12px;
+transition: background 0.15s;
+}
+
+.item-row:last-child { border-bottom: none; }
+.item-row:hover { background: rgba(176,160,144,0.06); }
+
+.item-row.checked {
+background: rgba(61,107,74,0.04);
+}
+
+/* CUSTOM CHECKBOX */
+.item-checkbox {
+width: 22px;
+height: 22px;
+border-radius: 6px;
+border: 2px solid var(–ink-faint);
+background: white;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+transition: all 0.15s;
+}
+
+.item-row.checked .item-checkbox {
+background: var(–green);
+border-color: var(–green);
+}
+
+.item-checkbox::after {
+content: ‘’;
+width: 6px;
+height: 10px;
+border: 2px solid white;
+border-top: none;
+border-left: none;
+transform: rotate(45deg) translate(-1px, -1px);
+opacity: 0;
+transition: opacity 0.15s;
+}
+
+.item-row.checked .item-checkbox::after { opacity: 1; }
+
+.item-content {
+flex: 1;
+min-width: 0;
+}
+
+.item-name {
+font-size: 15px;
+color: var(–ink);
+transition: color 0.15s;
+display: block;
+white-space: nowrap;
+overflow: hidden;
+text-overflow: ellipsis;
+}
+
+.item-row.checked .item-name {
+color: var(–ink-faint);
+text-decoration: line-through;
+text-decoration-color: var(–green-mid);
+}
+
+.item-qty {
+font-size: 12px;
+color: var(–ink-faint);
+font-weight: 500;
+margin-top: 1px;
+}
+
+/* INLINE EDIT */
+.item-edit-input {
+border: none;
+outline: none;
+background: transparent;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 15px;
+color: var(–ink);
+width: 100%;
+}
+
+.item-qty-input {
+border: none;
+outline: none;
+background: transparent;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 12px;
+color: var(–ink-faint);
+width: 100%;
+}
+
+.item-actions {
+display: flex;
+gap: 4px;
+opacity: 0;
+transition: opacity 0.15s;
+}
+
+.item-row:hover .item-actions { opacity: 1; }
+
+.item-action-btn {
+width: 28px;
+height: 28px;
+border-radius: 6px;
+border: none;
+background: transparent;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 14px;
+transition: background 0.15s;
+color: var(–ink-light);
+}
+
+.item-action-btn:hover { background: var(–cream-dark); }
+.item-action-btn.delete:hover { background: var(–rust-light); color: var(–rust); }
+
+/* ADD ITEM ROW */
+.add-item-row {
+display: flex;
+align-items: center;
+padding: 10px 16px;
+gap: 10px;
+border-top: 1px dashed var(–cream-dark);
+}
+
+.add-item-input {
+flex: 1;
+border: none;
+outline: none;
+background: transparent;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 14px;
+color: var(–ink);
+padding: 4px 0;
+}
+
+.add-item-input::placeholder { color: var(–ink-faint); font-style: italic; }
+
+.add-item-btn {
+width: 28px;
+height: 28px;
+border-radius: 6px;
+border: none;
+background: var(–green);
+color: white;
+cursor: pointer;
+font-size: 18px;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+transition: background 0.15s;
+}
+
+.add-item-btn:hover { background: #305540; }
+
+/* PARSING INDICATOR */
+.parsing-overlay {
+display: none;
+position: fixed;
+inset: 0;
+background: rgba(44,36,22,0.3);
+z-index: 50;
+align-items: center;
+justify-content: center;
+backdrop-filter: blur(2px);
+}
+
+.parsing-overlay.visible { display: flex; }
+
+.parsing-card {
+background: var(–cream);
+padding: 28px 36px;
+border-radius: 16px;
+text-align: center;
+box-shadow: 0 8px 32px rgba(44,36,22,0.2);
+}
+
+.parsing-spinner {
+width: 36px;
+height: 36px;
+border: 3px solid var(–cream-dark);
+border-top-color: var(–green);
+border-radius: 50%;
+animation: spin 0.8s linear infinite;
+margin: 0 auto 14px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.parsing-card p {
+font-family: ‘Lora’, serif;
+font-style: italic;
+color: var(–ink-light);
+font-size: 15px;
+}
+
+/* ERROR */
+.error-banner {
+display: none;
+margin: 12px 0;
+padding: 10px 14px;
+background: var(–rust-light);
+border: 1px solid rgba(196,98,45,0.2);
+border-radius: 8px;
+font-size: 13px;
+color: var(–rust);
+}
+
+.error-banner.visible { display: block; }
+
+/* MIC BUTTON */
+.btn-mic {
+width: 44px;
+height: 44px;
+border-radius: 50%;
+border: 2px solid var(–ink-faint);
+background: var(–cream);
+color: var(–ink-light);
+font-size: 18px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+flex-shrink: 0;
+transition: all 0.2s;
+position: relative;
+}
+
+.btn-mic:hover { border-color: var(–ink); color: var(–ink); }
+
+.btn-mic.listening {
+border-color: var(–rust);
+background: var(–rust-light);
+color: var(–rust);
+animation: mic-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes mic-pulse {
+0%, 100% { box-shadow: 0 0 0 0 rgba(196,98,45,0.3); }
+50% { box-shadow: 0 0 0 8px rgba(196,98,45,0); }
+}
+
+.mic-status {
+display: none;
+margin-top: 10px;
+padding: 8px 14px;
+background: var(–rust-light);
+border: 1px solid rgba(196,98,45,0.2);
+border-radius: 8px;
+font-size: 13px;
+color: var(–rust);
+align-items: center;
+gap: 8px;
+}
+
+.mic-status.visible { display: flex; }
+
+.mic-dot {
+width: 8px;
+height: 8px;
+border-radius: 50%;
+background: var(–rust);
+animation: mic-pulse-dot 0.8s ease-in-out infinite;
+flex-shrink: 0;
+}
+
+@keyframes mic-pulse-dot {
+0%, 100% { opacity: 1; transform: scale(1); }
+50% { opacity: 0.4; transform: scale(0.7); }
+}
+
+/* SWIPE TO DELETE */
+.item-row-wrap {
+position: relative;
+overflow: hidden;
+}
+
+.swipe-delete-bg {
+position: absolute;
+inset: 0;
+background: var(–rust);
+display: flex;
+align-items: center;
+justify-content: flex-end;
+padding-right: 20px;
+color: white;
+font-size: 13px;
+font-weight: 500;
+letter-spacing: 0.3px;
+}
+
+.item-row {
+position: relative;
+transition: transform 0.15s ease;
+background: var(–cream);
+}
+
+/* NUCLEAR BUTTON */
+.nuclear-btn {
+width: 100%;
+padding: 18px;
+margin-top: 24px;
+border-radius: 14px;
+border: none;
+background: linear-gradient(180deg, #e03030 0%, #b01010 100%);
+color: white;
+font-family: ‘DM Sans’, sans-serif;
+font-size: 18px;
+font-weight: 700;
+letter-spacing: 0.3px;
+cursor: pointer;
+box-shadow: 0 4px 0 #7a0000, 0 6px 20px rgba(176,16,16,0.4);
+transition: all 0.1s;
+display: flex;
+align-items: center;
+justify-content: center;
+gap: 10px;
+text-transform: uppercase;
+position: relative;
+overflow: hidden;
+}
+
+.nuclear-btn:active {
+transform: translateY(3px);
+box-shadow: 0 1px 0 #7a0000, 0 2px 8px rgba(176,16,16,0.3);
+}
+
+.nuclear-btn::before {
+content: ‘’;
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 50%;
+background: rgba(255,255,255,0.08);
+border-radius: 14px 14px 0 0;
+}
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(–ink-faint); border-radius: 4px; }
 </style>
+
 </head>
 <body>
 
@@ -747,40 +775,52 @@
       <div class="error-banner" id="errorBanner"></div>
     </div>
 
-    <!-- VIEW 2: ORGANISED -->
-    <div class="organised-view" id="organisedView">
-      <div class="list-meta">
-        <div class="list-count" id="listCount"></div>
-        <button class="clear-done-btn" onclick="clearDone()">Remove ticked</button>
-      </div>
-      <div id="categoryList">
-        <div class="empty-state">
-          <div class="empty-icon">🛒</div>
-          <p>Your organised list will appear here.<br>Type items in the Free-type tab first.</p>
-        </div>
-      </div>
-      <button class="nuclear-btn" onclick="completeShop()">☢️ Complete Shop</button>
+```
+<!-- VIEW 2: ORGANISED -->
+<div class="organised-view" id="organisedView">
+  <div class="list-meta">
+    <div class="list-count" id="listCount"></div>
+    <button class="clear-done-btn" onclick="clearDone()">Remove ticked</button>
+  </div>
+  <div id="categoryList">
+    <div class="empty-state">
+      <div class="empty-icon">🛒</div>
+      <p>Your organised list will appear here.<br>Type items in the Free-type tab first.</p>
     </div>
   </div>
+  <button class="nuclear-btn" onclick="completeShop()">☢️ Complete Shop</button>
 </div>
+```
 
-
+  </div>
+</div>
 
 <script>
 // ─── CATEGORIES ───────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { id: 'baby', name: 'Baby', emoji: '🍼' },
-  { id: 'medicine', name: 'Medicine', emoji: '💊' },
-  { id: 'bathroom', name: 'Bathroom', emoji: '🧴' },
-  { id: 'fruit_veg', name: 'Fruit & Veg', emoji: '🥦' },
-  { id: 'bakery', name: 'Bakery', emoji: '🍞' },
-  { id: 'meat', name: 'Meat', emoji: '🥩' },
-  { id: 'dairy', name: 'Dairy', emoji: '🥛' },
-  { id: 'drinks', name: 'Drinks', emoji: '🧃' },
-  { id: 'cereal_snacks', name: 'Cereal / Snacks', emoji: '🥣' },
-  { id: 'cupboard', name: 'Cupboard', emoji: '🫙' },
-  { id: 'frozen', name: 'Frozen', emoji: '🧊' },
-  { id: 'other', name: 'Other', emoji: '🛍️' },
+  { id: 'baby',         name: 'Baby',                             emoji: '🍼' },
+  { id: 'medicine',     name: 'Medicine',                         emoji: '💊' },
+  { id: 'shower',       name: 'Shower / Shampoo / Hair',          emoji: '🚿' },
+  { id: 'fruit_veg',    name: 'Fruit & Veg',                      emoji: '🥦' },
+  { id: 'bakery',       name: 'Bakery',                           emoji: '🍞' },
+  { id: 'meat',         name: 'Meat',                             emoji: '🥩' },
+  { id: 'fish',         name: 'Fish',                             emoji: '🐟' },
+  { id: 'cooked_meats', name: 'Cooked Meats',                     emoji: '🍖' },
+  { id: 'dairy',        name: 'Dairy',                            emoji: '🥛' },
+  { id: 'beer_wine',    name: 'Beer & Wine',                      emoji: '🍷' },
+  { id: 'soft_drinks',  name: 'Soft Drinks / Squash',             emoji: '🧃' },
+  { id: 'confectionery',name: 'Confectionery',                    emoji: '🍫' },
+  { id: 'crisps',       name: 'Crisps',                           emoji: '🥨' },
+  { id: 'tea_coffee',   name: 'Tea & Coffee',                     emoji: '☕' },
+  { id: 'herbs_spices', name: 'Herbs & Spices',                   emoji: '🌿' },
+  { id: 'tinned',       name: 'Tinned / Canned Goods',            emoji: '🥫' },
+  { id: 'pasta_rice',   name: 'Pasta & Rice',                     emoji: '🍝' },
+  { id: 'frozen',       name: 'Freezer',                          emoji: '🧊' },
+  { id: 'pet',          name: 'Pet',                              emoji: '🐾' },
+  { id: 'laundry',      name: 'Laundry',                          emoji: '🧺' },
+  { id: 'cleaning',     name: 'Washing Up & Cleaning',            emoji: '🧹' },
+  { id: 'wrapping',     name: 'Cling Film / Foil / Baking Paper', emoji: '📦' },
+  { id: 'other',        name: 'Other',                            emoji: '🛍️' },
 ];
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
@@ -955,27 +995,52 @@ function clearNotepad() {
 }
 
 // ─── LOCAL KEYWORD CATEGORISER ───────────────────────────────────────────────
+
+// PRIORITY: tinned/canned prefix always wins → goes to tinned regardless of ingredient
+const TINNED_TRIGGERS = ['tin of','tins of','tinned','canned','can of','cans of'];
+
 const CATEGORY_KEYWORDS = {
-  baby: ['nappy','nappies','pampers','huggies','formula','baby food','baby wipe','baby milk','baby','sudocrem','calpol','infacare','cow & gate','aptamil'],
-  medicine: ['paracetamol','ibuprofen','aspirin','vitamin','supplement','antihistamine','plaster','bandage','antiseptic','cold & flu','lemsip','strepsil','beechams','gaviscon','rennie','lotion','cream','ointment','medicine','tablet','capsule','syrup','inhaler','pharmacy'],
-  bathroom: ['shampoo','conditioner','shower gel','body wash','soap','toothpaste','toothbrush','mouthwash','floss','deodorant','antiperspirant','razor','shaving','moisturiser','face wash','cotton wool','cotton pad','toilet roll','toilet paper','loo roll','tissue','wipe','sanitary','tampon','pad','hairspray','hair gel','nail','perfume','aftershave','skincare','suncream','sunscreen'],
-  fruit_veg: ['apple','pear','banana','orange','lemon','lime','grape','strawberry','raspberry','blueberry','cherry','mango','melon','pineapple','kiwi','avocado','tomato','potato','onion','garlic','carrot','broccoli','cauliflower','spinach','lettuce','salad','cucumber','pepper','courgette','aubergine','mushroom','celery','leek','parsnip','turnip','cabbage','kale','beetroot','sweetcorn','peas','beans','sprout','herb','coriander','parsley','basil','mint','rosemary','thyme','ginger','chilli','sweet potato','butternut','squash','asparagus','artichoke','fennel','radish','spring onion','shallot'],
-  bakery: ['bread','loaf','roll','bap','wrap','tortilla','pitta','naan','bagel','croissant','muffin','scone','crumpet','brioche','baguette','sourdough','focaccia','cake','pastry','doughnut','cookie','brownie'],
-  meat: ['chicken','beef','pork','lamb','turkey','duck','mince','steak','chop','fillet','breast','thigh','sausage','bacon','ham','gammon','salami','chorizo','pepperoni','prosciutto','fish','salmon','cod','tuna','haddock','mackerel','sea bass','prawn','shrimp','crab','lobster','scallop','mussel','sardine','anchovy','trout','tilapia','pollock','deli','meat'],
-  dairy: ['milk','cheese','cheddar','mozzarella','brie','camembert','stilton','parmesan','feta','halloumi','gouda','edam','cream cheese','cottage cheese','yogurt','yoghurt','butter','margarine','spread','cream','creme fraiche','sour cream','egg','oat milk','almond milk','soya milk','coconut milk','dairy'],
-  drinks: ['water','sparkling','juice','orange juice','apple juice','squash','cordial','lemonade','cola','coke','pepsi','fizzy','beer','lager','ale','cider','wine','prosecco','champagne','spirits','gin','vodka','whisky','rum','coffee','tea','herbal tea','hot chocolate','milkshake','smoothie','energy drink','sports drink','tonic'],
-  cereal_snacks: ['cereal','cornflake','weetabix','shreddies','granola','muesli','porridge','oats','cereal bar','flapjack','crisp','pringles','popcorn','pretzel','cracker','rice cake','biscuit','digestive','hobnob','rich tea','custard cream','bourbon','oreo','chocolate','kitkat','twix','snickers','haribo','sweet','candy','nut','almond','cashew','walnut','peanut','pistachio','trail mix','snack'],
-  cupboard: ['pasta','spaghetti','penne','fusilli','tagliatelle','lasagne','rice','noodle','flour','sugar','salt','pepper','oil','olive oil','vegetable oil','vinegar','balsamic','soy sauce','worcestershire','ketchup','tomato sauce','mayo','mayonnaise','mustard','salad dressing','hot sauce','pesto','tomato puree','tin','tinned','canned','can','chopped tomato','tom','toms','baked bean','chickpea','lentil','kidney bean','soup','stock','stock cube','bouillon','gravy','yeast extract','marmite','jam','marmalade','honey','syrup','spread','peanut butter','nutella','coconut','curry paste','curry powder','spice','paprika','cumin','turmeric','cinnamon','oregano','mixed herbs','bay leaf','chilli flake','breadcrumb','stuffing','washing up','fairy','washing powder','laundry','fabric','bleach','cleaner','spray','bin bag','bin liner','foil','cling film','baking paper','kitchen roll'],
-  frozen: ['frozen','ice cream','sorbet','gelato','chips','oven chips','waffle','ice lolly','fish finger','pizza','ready meal','frozen pea','frozen veg','frozen berry','ice'],
+  baby:         ['nappy','nappies','pampers','huggies','formula','baby food','baby wipe','baby milk','baby lotion','baby','sudocrem','calpol','infacare','cow & gate','aptamil','dummy','nappy bag'],
+  medicine:     ['paracetamol','ibuprofen','aspirin','vitamin','supplement','antihistamine','plaster','bandage','antiseptic','cold & flu','lemsip','strepsil','beechams','gaviscon','rennie','medicine','tablet','capsule','syrup','inhaler','pharmacy','nurofen','sudafed','piriton','night nurse'],
+  shower:       ['shampoo','conditioner','shower gel','body wash','soap bar','hand soap','toothpaste','toothbrush','mouthwash','dental floss','deodorant','antiperspirant','razor','shaving foam','shaving gel','moisturiser','face wash','cotton wool','cotton pad','toilet roll','toilet paper','loo roll','tissue','wet wipe','sanitary','tampon','pad','hairspray','hair gel','hair mask','dry shampoo','nail varnish','perfume','aftershave','skincare','suncream','sunscreen','lip balm','face mask','toner','serum','body lotion'],
+  fruit_veg:    ['apple','pear','banana','orange','lemon','lime','grape','strawberry','raspberry','blueberry','blackberry','cherry','mango','melon','pineapple','kiwi','avocado','fresh tomato','baby tomato','cherry tomato','vine tomato','potato','onion','red onion','garlic','carrot','broccoli','cauliflower','spinach','lettuce','salad','cucumber','pepper','courgette','aubergine','mushroom','celery','leek','parsnip','turnip','cabbage','kale','beetroot','sweetcorn','sprout','fresh coriander','fresh parsley','fresh basil','fresh mint','fresh rosemary','fresh thyme','fresh ginger','fresh chilli','sweet potato','butternut squash','asparagus','artichoke','fennel','radish','spring onion','shallot','watercress','rocket','pak choi','plantain','papaya','passion fruit','nectarine','peach','plum','apricot','fig','pomegranate','grapefruit','clementine','satsuma','mandarin','swede','celeriac'],
+  bakery:       ['bread','loaf','roll','bap','wrap','tortilla','pitta','naan','bagel','croissant','muffin','scone','crumpet','brioche','baguette','sourdough','focaccia','cake','pastry','doughnut','cookie','brownie','hot cross bun','teacake','breadstick','flatbread'],
+  meat:         ['chicken breast','chicken thigh','chicken leg','chicken wing','whole chicken','beef mince','beef steak','pork chop','pork loin','lamb chop','lamb mince','lamb shank','turkey breast','duck breast','diced beef','diced chicken','diced lamb','mince','steak','chicken','beef','pork','lamb','turkey','duck','sausage','bacon','streaky bacon','back bacon'],
+  fish:         ['salmon','cod','haddock','mackerel','sea bass','prawn','shrimp','crab','lobster','scallop','mussel','sardine','anchovy','trout','tilapia','pollock','tuna steak','fish fillet','fresh fish','smoked salmon','smoked mackerel','fish'],
+  cooked_meats: ['ham','gammon','salami','chorizo','pepperoni','prosciutto','parma ham','pancetta','pastrami','corned beef','cooked chicken','roast chicken','deli meat','sliced meat','pate','lardons'],
+  dairy:        ['milk','semi skimmed','skimmed milk','whole milk','oat milk','almond milk','soya milk','cheese','cheddar','mozzarella','brie','camembert','stilton','parmesan','feta','halloumi','gouda','edam','cream cheese','cottage cheese','yogurt','yoghurt','greek yogurt','butter','margarine','flora','lurpak','double cream','single cream','whipping cream','creme fraiche','sour cream','egg','eggs'],
+  beer_wine:    ['beer','lager','ale','stout','cider','wine','red wine','white wine','rose wine','prosecco','champagne','gin','vodka','whisky','rum','spirits','baileys','port','sherry'],
+  soft_drinks:  ['water','sparkling water','still water','juice','orange juice','apple juice','squash','cordial','lemonade','cola','coke','pepsi','fizzy','diet coke','fanta','sprite','lucozade','ribena','capri sun','smoothie','energy drink','red bull','monster','sports drink','coconut water','kombucha'],
+  confectionery:['chocolate','kitkat','twix','snickers','maltesers','haribo','jelly baby','jelly bean','pick n mix','fudge','toffee','caramel','lollipop','chewing gum','polo','tic tac','celebrations','roses','quality street','ferrero','lindt','cadbury','dairy milk','milkybar','bounty','lion bar','aero','wispa','flake','sweet'],
+  crisps:       ['crisp','pringles','popcorn','pretzel','hula hoop','wotsit','dorito','walkers','tyrrell','kettle chip','rice cake','corn chip','tortilla chip','quaver','skips','frazzle','nik nak'],
+  tea_coffee:   ['tea','teabag','tea bag','green tea','herbal tea','camomile','peppermint tea','coffee','instant coffee','ground coffee','coffee pod','nespresso','decaf','hot chocolate','ovaltine','horlicks','cocoa'],
+  herbs_spices: ['paprika','cumin','turmeric','cinnamon','oregano','mixed herbs','bay leaf','chilli flake','chilli powder','curry powder','garam masala','coriander powder','mustard seed','fennel seed','star anise','cardamom','clove','nutmeg','allspice','smoked paprika','cayenne','black pepper','white pepper','sea salt','rock salt','garlic powder','onion powder','dried thyme','dried rosemary','dried basil','italian seasoning','chinese five spice','herb','spice','seasoning'],
+  tinned:       ['tinned tomato','canned tomato','chopped tomato','tin tomato','tinned bean','baked bean','kidney bean','chickpea','tinned soup','tinned tuna','tinned salmon','tinned sardine','tinned mackerel','tinned corn','tinned pea','tinned peach','tinned pear','tinned pineapple','coconut milk','coconut cream','tinned custard','tinned rice pudding','tinned spaghetti','tin','tinned','canned'],
+  pasta_rice:   ['pasta','spaghetti','penne','fusilli','tagliatelle','lasagne sheet','macaroni','rigatoni','farfalle','orzo','gnocchi','rice','basmati','long grain','risotto rice','arborio','jasmine rice','brown rice','noodle','egg noodle','rice noodle','udon','soba','flour','plain flour','self raising','bread flour','sugar','caster sugar','icing sugar','golden syrup','treacle','yeast','baking powder','bicarbonate','cornflour','oats','porridge oat','couscous','bulgur','quinoa','pearl barley','stuffing mix','breadcrumb','panko'],
+  frozen:       ['frozen','ice cream','sorbet','gelato','frozen chips','oven chips','waffle','ice lolly','fish finger','frozen pizza','ready meal','frozen pea','frozen veg','frozen berry','frozen spinach','frozen prawn','frozen fish','ice cube'],
+  pet:          ['dog food','cat food','pet food','dog treat','cat treat','dog biscuit','cat biscuit','pedigree','whiskas','felix','winalot','bakers','royal canin','dreamies','dentastix','dog chew','cat litter','litter','pet'],
+  laundry:      ['washing powder','laundry','washing liquid','fabric conditioner','softener','lenor','comfort','ariel','persil','bold','fairy non bio','daz','surf','bio washing','non bio','colour wash','stain remover','vanish','dryer sheet','ironing water'],
+  cleaning:     ['washing up liquid','fairy liquid','washing up','dish soap','bleach','domestos','dettol','flash','mr muscle','cillit','antibacterial','disinfectant','surface spray','bathroom cleaner','toilet cleaner','oven cleaner','kitchen cleaner','sponge','scourer','cloth','floor cleaner','glass cleaner','bin bag','bin liner','rubber glove','kitchen roll','j cloth'],
+  wrapping:     ['cling film','tin foil','aluminium foil','baking paper','greaseproof','parchment','sandwich bag','freezer bag','zip lock','food bag','foil tray','foil container'],
 };
 
 function guessCategory(name) {
   const lower = name.toLowerCase();
-  for (const [cat, keywords] of Object.entries(CATEGORY_KEYWORDS)) {
+
+  // PRIORITY: if item contains a tinned/canned trigger → always goes to tinned
+  for (const trigger of TINNED_TRIGGERS) {
+    if (lower.includes(trigger)) return 'tinned';
+  }
+
+  // Otherwise match keywords in aisle order
+  for (const cat of CATEGORIES) {
+    const keywords = CATEGORY_KEYWORDS[cat.id];
+    if (!keywords) continue;
     for (const kw of keywords) {
-      if (lower.includes(kw)) return cat;
+      if (lower.includes(kw)) return cat.id;
     }
   }
+
   return 'other';
 }
 
@@ -1152,29 +1217,86 @@ function renderOrganised() {
 function renderItem(item) {
   const qtyText = item.qty ? `${item.qty}${item.unit ? ' ' + item.unit : ''}` : (item.unit || '');
   return `
-  <div class="item-row ${item.checked ? 'checked' : ''}" id="item_${item.id}">
-    <div class="item-checkbox" onclick="toggleItem('${item.id}')"></div>
-    <div class="item-content">
-      <input class="item-edit-input ${item.checked ? 'item-name' : ''}" 
-        value="${escHtml(item.name)}" 
-        style="${item.checked ? 'color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--green-mid)' : ''}"
-        onblur="updateItemName('${item.id}', this.value)"
-        onkeydown="if(event.key==='Enter')this.blur()" />
-      ${qtyText ? `<input class="item-qty-input" value="${escHtml(qtyText)}" 
-        onblur="updateItemQty('${item.id}', this.value)"
-        onkeydown="if(event.key==='Enter')this.blur()" />` : 
-        `<input class="item-qty-input" placeholder="qty / unit" 
-        onblur="updateItemQty('${item.id}', this.value)"
-        onkeydown="if(event.key==='Enter')this.blur()" />`}
-    </div>
-    <div class="item-actions">
-      <button class="item-action-btn delete" onclick="deleteItem('${item.id}')" title="Delete">✕</button>
+  <div class="item-row-wrap" id="wrap_${item.id}">
+    <div class="swipe-delete-bg">Swipe to remove</div>
+    <div class="item-row ${item.checked ? 'checked' : ''}" id="item_${item.id}"
+      ontouchstart="swipeStart(event,'${item.id}')"
+      ontouchmove="swipeMove(event,'${item.id}')"
+      ontouchend="swipeEnd(event,'${item.id}')">
+      <div class="item-checkbox" onclick="toggleItem('${item.id}')"></div>
+      <div class="item-content">
+        <input class="item-edit-input" 
+          value="${escHtml(item.name)}" 
+          style="${item.checked ? 'color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--green-mid)' : ''}"
+          onblur="updateItemName('${item.id}', this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()" />
+        ${qtyText ? `<input class="item-qty-input" value="${escHtml(qtyText)}" 
+          onblur="updateItemQty('${item.id}', this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()" />` : 
+          `<input class="item-qty-input" placeholder="qty / unit" 
+          onblur="updateItemQty('${item.id}', this.value)"
+          onkeydown="if(event.key==='Enter')this.blur()" />`}
+      </div>
     </div>
   </div>`;
 }
 
 function escHtml(s) {
   return String(s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ─── SWIPE TO DELETE ──────────────────────────────────────────────────────────
+const swipeState = {};
+
+function swipeStart(e, id) {
+  const touch = e.touches[0];
+  swipeState[id] = { startX: touch.clientX, startY: touch.clientY, dragging: false };
+}
+
+function swipeMove(e, id) {
+  const state = swipeState[id];
+  if (!state) return;
+  const touch = e.touches[0];
+  const dx = touch.clientX - state.startX;
+  const dy = touch.clientY - state.startY;
+
+  // Only activate horizontal swipe if clearly more horizontal than vertical
+  if (!state.dragging && Math.abs(dx) < 8) return;
+  if (!state.dragging && Math.abs(dy) > Math.abs(dx)) return;
+
+  state.dragging = true;
+  e.preventDefault(); // stop page scroll while swiping
+
+  const el = document.getElementById('item_' + id);
+  if (!el) return;
+  const clamp = Math.min(0, dx); // only allow left swipe
+  el.style.transform = `translateX(${clamp}px)`;
+  el.style.transition = 'none';
+}
+
+function swipeEnd(e, id) {
+  const state = swipeState[id];
+  if (!state) return;
+  const el = document.getElementById('item_' + id);
+  if (!el) return;
+
+  const touch = e.changedTouches[0];
+  const dx = touch.clientX - state.startX;
+
+  el.style.transition = 'transform 0.2s ease';
+
+  if (dx < -80) {
+    // Swiped far enough — delete
+    el.style.transform = `translateX(-100%)`;
+    setTimeout(() => {
+      deleteItem(id);
+    }, 200);
+  } else {
+    // Snap back
+    el.style.transform = 'translateX(0)';
+  }
+
+  delete swipeState[id];
 }
 
 // ─── ITEM ACTIONS ─────────────────────────────────────────────────────────────
@@ -1261,5 +1383,6 @@ setInterval(() => {
   localStorage.setItem('shopsmart_items', JSON.stringify(items));
 }, 3000);
 </script>
+
 </body>
 </html>
