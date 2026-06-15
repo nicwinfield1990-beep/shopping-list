@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="León Runs">
+<meta name="theme-color" content="#f2f2f7">
+<title>León Runs 2026</title>
+<style>
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f2f2f7;color:#1c1c1e;font-size:15px}
+
+.header{position:sticky;top:0;z-index:100;background:#fff;border-bottom:0.5px solid #d1d1d6;padding:12px 16px 0}
+.header-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+h1.app-title{font-size:20px;font-weight:700;letter-spacing:-0.5px}
+.today-btn{font-size:14px;font-weight:500;color:#007aff;background:none;border:none;cursor:pointer;padding:4px 0}
+
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.stat{background:#f2f2f7;border-radius:10px;padding:8px 6px;text-align:center}
+.stat.total{background:#fef3c7}
+.stat-label{display:block;font-size:10px;color:#8e8e93;text-transform:uppercase;letter-spacing:0.04em;margin-bottom:2px}
+.stat-val{display:block;font-size:15px;font-weight:600;letter-spacing:-0.3px}
+.stat.total .stat-val{color:#92400e}
+
+.month-nav{display:flex;align-items:center;gap:2px;padding-bottom:10px}
+.nav-arrow{width:30px;height:30px;border:none;background:none;font-size:24px;color:#007aff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;padding:0;line-height:1}
+.nav-arrow:disabled{color:#c7c7cc;cursor:default}
+.month-pills{flex:1;display:flex;gap:5px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;padding:2px 0}
+.month-pills::-webkit-scrollbar{display:none}
+.month-pill{font-size:12px;font-weight:500;padding:5px 11px;border-radius:16px;border:0.5px solid #d1d1d6;background:#f2f2f7;color:#6e6e73;cursor:pointer;white-space:nowrap;flex-shrink:0}
+.month-pill.active{background:#007aff;color:#fff;border-color:#007aff}
+
+.calendar-wrap{overflow:hidden}
+.calendar-slide{will-change:transform;padding:14px 16px 60px}
+
+.week-block{background:#fff;border-radius:14px;border:0.5px solid #e5e5ea;overflow:hidden;margin-bottom:10px;scroll-margin-top:170px}
+.week-block.current-week{border:1.5px solid #007aff}
+.week-head{display:flex;align-items:center;gap:8px;padding:10px 14px;background:#f9f9fb;border-bottom:0.5px solid #e5e5ea;flex-wrap:wrap;gap:6px}
+.week-block.current-week .week-head{background:#ebf3ff}
+.week-title{font-size:12px;font-weight:600;color:#6e6e73;text-transform:uppercase;letter-spacing:0.05em}
+.week-block.current-week .week-title{color:#007aff}
+.now-badge{font-size:10px;font-weight:700;background:#007aff;color:#fff;border-radius:6px;padding:2px 7px}
+.diesel-wrap{display:flex;align-items:center;gap:5px;margin-left:auto}
+.diesel-wrap label{font-size:11px;color:#6e6e73;white-space:nowrap}
+.diesel-wrap input{width:64px;font-size:13px;font-family:inherit;padding:4px 7px;border:0.5px solid #c7c7cc;border-radius:8px;background:#fff;color:#1c1c1e;-webkit-appearance:none;text-align:center}
+.week-total-badge{font-size:13px;font-weight:600;color:#92400e;background:#fef3c7;border-radius:8px;padding:3px 10px;white-space:nowrap}
+
+.days-grid{display:grid;grid-template-columns:1fr 1fr}
+.day-cell{padding:12px 14px;border-bottom:0.5px solid #e5e5ea;border-right:0.5px solid #e5e5ea}
+.day-cell:nth-child(2n){border-right:none}
+.day-cell.solo{grid-column:span 2;border-right:none;border-bottom:none}
+.day-name{font-size:13px;font-weight:600;margin-bottom:1px}
+.day-date{font-size:11px;color:#6e6e73;margin-bottom:10px}
+.day-cell.today-cell .day-name,.day-cell.today-cell .day-date{color:#007aff}
+.check-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;cursor:pointer;-webkit-user-select:none}
+.check-row input[type=checkbox]{width:18px;height:18px;margin:0;accent-color:#007aff;cursor:pointer;flex-shrink:0}
+.check-row span{font-size:13px}
+.day-cost{font-size:11px;font-weight:600;color:#007aff;margin-top:4px;min-height:14px}
+.day-cell.past .day-name,.day-cell.past .day-date,.day-cell.past .check-row span{color:#b0b0b8}
+.day-cell.past .check-row input[type=checkbox]{opacity:0.4}
+
+.weekend-section{padding:12px 14px;border-top:0.5px solid #e5e5ea;background:#fafafa}
+.weekend-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em;color:#8e8e93;margin-bottom:10px}
+.trip-card{background:#fff;border:0.5px solid #e5e5ea;border-radius:10px;padding:10px 12px;margin-bottom:8px;position:relative}
+.trip-row{display:flex;align-items:center;gap:7px;margin-bottom:6px}
+.trip-row label{font-size:12px;color:#6e6e73;width:34px;flex-shrink:0}
+.trip-row input[type=text]{flex:1;font-size:13px;font-family:inherit;padding:6px 10px;border:0.5px solid #c7c7cc;border-radius:8px;background:#fff;color:#1c1c1e;-webkit-appearance:none;min-width:0}
+.calc-btn{font-size:12px;font-weight:600;color:#fff;background:#007aff;border:none;border-radius:8px;padding:6px 10px;cursor:pointer;white-space:nowrap;flex-shrink:0;font-family:inherit}
+.calc-btn:disabled{background:#c7c7cc;cursor:default}
+.trip-meta{display:flex;align-items:center;gap:8px;margin-top:2px;flex-wrap:wrap}
+.miles-wrap{display:flex;align-items:center;gap:4px}
+.miles-wrap input{width:62px;font-size:13px;font-family:inherit;padding:5px 7px;border:0.5px solid #c7c7cc;border-radius:8px;background:#fff;color:#1c1c1e;-webkit-appearance:none;text-align:center}
+.miles-wrap span{font-size:12px;color:#6e6e73}
+.mpg-wrap{display:flex;align-items:center;gap:4px}
+.mpg-wrap label{font-size:12px;color:#6e6e73}
+.mpg-wrap input{width:50px;font-size:13px;font-family:inherit;padding:5px 7px;border:0.5px solid #c7c7cc;border-radius:8px;background:#fff;color:#1c1c1e;-webkit-appearance:none;text-align:center}
+.trip-cost{font-size:12px;font-weight:600;color:#007aff;white-space:nowrap;margin-left:auto}
+.trip-delete{position:absolute;top:8px;right:8px;width:24px;height:24px;border:none;background:none;color:#c7c7cc;font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;padding:0;line-height:1;font-family:inherit}
+.trip-delete:active{background:#fff0f0;color:#ff3b30}
+.calc-status{font-size:11px;color:#6e6e73;margin-top:5px;min-height:14px}
+.calc-status.error{color:#ff3b30}
+.add-trip-btn{display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:9px 12px;border:1px dashed #c7c7cc;border-radius:10px;background:none;color:#007aff;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;margin-top:2px}
+
+.pay-bar{border-radius:12px;padding:13px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;background:#92400e}
+.pay-bar-label{font-size:12px;font-weight:600;color:rgba(255,255,255,0.75)}
+.pay-bar-val{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.5px}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-top">
+    <h1 class="app-title">León Runs</h1>
+    <button class="today-btn" onclick="goToToday()">This week</button>
+  </div>
+  <div class="stats-row">
+    <div class="stat"><span class="stat-label">Runs</span><span class="stat-val" id="stat-runs">—</span></div>
+    <div class="stat"><span class="stat-label">Nursery</span><span class="stat-val" id="stat-nursery">—</span></div>
+    <div class="stat"><span class="stat-label">Weekend</span><span class="stat-val" id="stat-weekend">—</span></div>
+    <div class="stat total"><span class="stat-label">Total</span><span class="stat-val" id="stat-total">—</span></div>
+  </div>
+  <div class="month-nav">
+    <button class="nav-arrow" id="btn-prev" onclick="navigateMonth(-1)">‹</button>
+    <div class="month-pills" id="month-pills"></div>
+    <button class="nav-arrow" id="btn-next" onclick="navigateMonth(1)">›</button>
+  </div>
+</div>
+
+<div class="calendar-wrap" id="cal-wrap">
+  <div class="calendar-slide" id="cal-slide">
+    <div id="calendar"></div>
+  </div>
+</div>
+
+<script>
+const LITRE_PER_GALLON = 4.54609;
+const NURSERY_MPG = 50;
+const DEFAULT_WKND_MPG = 58;
+const ONEWAY = 10.3;
+const RETURN_MILES = ONEWAY * 2;
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const MONTHS_SHORT = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
+const today = new Date(); today.setHours(0,0,0,0);
+const todayKey = dateKey(today);
+const currentWeekMonday = getMonday(today);
+const currentWeekKey = dateKey(currentWeekMonday);
+
+let currentMonth = today.getFullYear() === 2026 ? today.getMonth() : 5;
+let isAnimating = false;
+let state = { days: {}, weeks: {} };
+
+// ── UTILS ────────────────────────────────────────────────────────────────
+
+function dateKey(d) { return d.toISOString().slice(0,10); }
+function weekKey(mon) { return 'wk_' + dateKey(mon); }
+function fmtShort(d) { return d.getDate() + ' ' + MONTHS_SHORT[d.getMonth()]; }
+
+function getMonday(d) {
+  const dt = new Date(d);
+  const day = dt.getDay();
+  dt.setDate(dt.getDate() + (day === 0 ? -6 : 1 - day));
+  dt.setHours(0,0,0,0);
+  return dt;
+}
+
+function costForMiles(miles, mpg, dieselPence) {
+  const m = parseFloat(miles), p = parseFloat(mpg), d = parseFloat(dieselPence);
+  if (!m || !p || !d) return null;
+  return (m / p) * LITRE_PER_GALLON * d / 100;
+}
+
+function getPayCutoff(monthIdx) {
+  const d = new Date(2026, monthIdx, 28);
+  const dow = d.getDay();
+  if (dow === 6) d.setDate(27);
+  if (dow === 0) d.setDate(26);
+  return d;
+}
+
+function weekContains(monday, target) {
+  const sun = new Date(monday); sun.setDate(monday.getDate() + 6);
+  return target >= monday && target <= sun;
+}
+
+// ── WEEKS ────────────────────────────────────────────────────────────────
+
+function getAllWeeks() {
+  const weeks = [];
+  const d = new Date(2026, 0, 5);
+  const end = new Date(2026, 11, 28);
+  while (d <= end) {
+    weeks.push(new Date(d));
+    d.setDate(d.getDate() + 7);
+  }
+  return weeks;
+}
+
+const ALL_WEEKS = getAllWeeks();
+function getWeeksForMonth(m) { return ALL_WEEKS.filter(w => w.getMonth() === m); }
+
+// ── STATE ────────────────────────────────────────────────────────────────
+
+function getDay(key) {
+  if (!state.days[key]) state.days[key] = { dropoff: false, pickup: false };
+  return state.days[key];
+}
+
+function getWeek(wk) {
+  if (!state.weeks[wk]) state.weeks[wk] = { diesel: null, wkndTrips: [] };
+  if (!Array.isArray(state.weeks[wk].wkndTrips)) state.weeks[wk].wkndTrips = [];
+  return state.weeks[wk];
+}
+
+function save() {
+  try { localStorage.setItem('leon-tracker-2026', JSON.stringify(state)); } catch(e) {}
+}
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem('leon-tracker-2026');
+    if (raw) { state = JSON.parse(raw); }
+    if (!state.days) state.days = {};
+    if (!state.weeks) state.weeks = {};
+  } catch(e) { state = { days: {}, weeks: {} }; }
+  migrateOld();
+}
+
+function migrateOld() {
+  try {
+    const raw = localStorage.getItem('leon-tracker-2025');
+    if (!raw) return;
+    const old = JSON.parse(raw);
+    Object.entries(old).forEach(([k, v]) => {
+      const nk = k.replace(/2025/g, '2026');
+      if (k.startsWith('wk_')) {
+        if (!state.weeks[nk]) {
+          const trips = [];
+          if (v.wkndMiles && parseFloat(v.wkndMiles) > 0)
+            trips.push({ from: '', to: '', miles: String(v.wkndMiles), mpg: DEFAULT_WKND_MPG });
+          state.weeks[nk] = { diesel: v.diesel ?? null, wkndTrips: trips };
+        }
+      } else if (v && typeof v === 'object' && ('dropoff' in v || 'pickup' in v)) {
+        if (!state.days[nk]) state.days[nk] = v;
+      }
+    });
+    localStorage.removeItem('leon-tracker-2025');
+    save();
+  } catch(e) {}
+}
+
+// ── RENDER ───────────────────────────────────────────────────────────────
+
+function render() {
+  buildPills();
+  renderMonth(true);
+}
+
+function buildPills() {
+  const nav = document.getElementById('month-pills');
+  nav.innerHTML = '';
+  MONTHS_SHORT.forEach((name, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'month-pill' + (i === currentMonth ? ' active' : '');
+    btn.textContent = name;
+    btn.onclick = () => {
+      if (i !== currentMonth) navigateMonthTo(i, i > currentMonth ? 'next' : 'prev');
+    };
+    nav.appendChild(btn);
+  });
+  setTimeout(() => {
+    const active = nav.querySelector('.active');
+    if (active) active.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+  }, 60);
+  document.getElementById('btn-prev').disabled = currentMonth === 0;
+  document.getElementById('btn-next').disabled = currentMonth === 11;
+}
+
+function renderMonth(doScroll) {
+  const savedY = window.scrollY;
+  const cal = document.getElementById('calendar');
+  cal.innerHTML = '';
+
+  const weeks = getWeeksForMonth(currentMonth);
+  const cutoff = getPayCutoff(currentMonth);
+  let cutoffDone = false;
+
+  // Pre-calculate cost up to cutoff week
+  let preTotal = 0;
+  weeks.forEach(mon => {
+    if (!weekContains(mon, cutoff) && mon > cutoff) return;
+    const wk = weekKey(mon);
+    const w = getWeek(wk);
+    const d = w.diesel;
+    for (let i = 0; i < 3; i++) {
+      const day = new Date(mon); day.setDate(mon.getDate() + i);
+      const dd = getDay(dateKey(day));
+      const trips = (dd.dropoff ? 1 : 0) + (dd.pickup ? 1 : 0);
+      if (trips) { const c = costForMiles(trips === 2 ? RETURN_MILES : ONEWAY, NURSERY_MPG, d); if (c) preTotal += c; }
+    }
+    w.wkndTrips.forEach(t => { const c = costForMiles(t.miles, t.mpg || DEFAULT_WKND_MPG, d); if (c) preTotal += c; });
+  });
+
+  weeks.forEach(mon => {
+    cal.appendChild(buildWeek(mon));
+    if (!cutoffDone && weekContains(mon, cutoff)) {
+      cutoffDone = true;
+      cal.appendChild(buildPayBar(cutoff, preTotal));
+    }
+  });
+
+  if (!cutoffDone) cal.appendChild(buildPayBar(cutoff, preTotal));
+
+  updateStats();
+  updatePills();
+
+  if (doScroll) {
+    setTimeout(() => {
+      if (currentMonth === today.getMonth() && today.getFullYear() === 2026) {
+        const el = document.getElementById('week-' + currentWeekKey);
+        if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      } else {
+        window.scrollTo({ top: 0 });
+      }
+    }, 80);
+  } else {
+    requestAnimationFrame(() => window.scrollTo(0, savedY));
+  }
+}
+
+function buildPayBar(cutoff, total) {
+  const bar = document.createElement('div');
+  bar.className = 'pay-bar';
+  const lbl = document.createElement('p');
+  lbl.className = 'pay-bar-label';
+  lbl.textContent = 'To claim by ' + fmtShort(cutoff);
+  const val = document.createElement('p');
+  val.className = 'pay-bar-val';
+  val.textContent = '£' + total.toFixed(2);
+  bar.appendChild(lbl);
+  bar.appendChild(val);
+  return bar;
+}
+
+function buildWeek(mon) {
+  const wk = weekKey(mon);
+  const w = getWeek(wk);
+  const diesel = w.diesel;
+  const isCurrent = dateKey(mon) === currentWeekKey;
+
+  let nurseryCost = 0, nurseryRuns = 0;
+  for (let i = 0; i < 3; i++) {
+    const d = new Date(mon); d.setDate(mon.getDate() + i);
+    const dd = getDay(dateKey(d));
+    const trips = (dd.dropoff ? 1 : 0) + (dd.pickup ? 1 : 0);
+    if (trips) {
+      nurseryRuns++;
+      const c = costForMiles(trips === 2 ? RETURN_MILES : ONEWAY, NURSERY_MPG, diesel);
+      if (c) nurseryCost += c;
+    }
+  }
+  let wkndCost = 0;
+  w.wkndTrips.forEach(t => { const c = costForMiles(t.miles, t.mpg || DEFAULT_WKND_MPG, diesel); if (c) wkndCost += c; });
+  const weekTotal = nurseryCost + wkndCost;
+
+  const block = document.createElement('div');
+  block.className = 'week-block' + (isCurrent ? ' current-week' : '');
+  block.id = 'week-' + dateKey(mon);
+
+  // Head
+  const head = document.createElement('div');
+  head.className = 'week-head';
+
+  const title = document.createElement('span');
+  title.className = 'week-title';
+  title.textContent = 'w/c ' + fmtShort(mon);
+  head.appendChild(title);
+
+  if (isCurrent) {
+    const badge = document.createElement('span');
+    badge.className = 'now-badge';
+    badge.textContent = 'Now';
+    head.appendChild(badge);
+  }
+
+  const dWrap = document.createElement('div');
+  dWrap.className = 'diesel-wrap';
+  const dLbl = document.createElement('label');
+  dLbl.textContent = 'Diesel p/L';
+  const dIn = document.createElement('input');
+  dIn.type = 'number';
+  dIn.inputMode = 'decimal';
+  dIn.placeholder = 'p/L';
+  dIn.step = '0.1';
+  if (diesel !== null) dIn.value = diesel;
+  dIn.addEventListener('change', () => {
+    const v = dIn.value.trim();
+    getWeek(wk).diesel = v ? parseFloat(v) : null;
+    save(); renderMonth(false);
+  });
+  dWrap.appendChild(dLbl);
+  dWrap.appendChild(dIn);
+  head.appendChild(dWrap);
+
+  const tot = document.createElement('span');
+  tot.className = 'week-total-badge';
+  tot.textContent = weekTotal > 0 ? '£' + weekTotal.toFixed(2) : (diesel !== null ? '£0.00' : '—');
+  head.appendChild(tot);
+  block.appendChild(head);
+
+  // Days (Mon, Tue, Wed)
+  const grid = document.createElement('div');
+  grid.className = 'days-grid';
+  for (let i = 0; i < 3; i++) {
+    const d = new Date(mon); d.setDate(mon.getDate() + i);
+    const key = dateKey(d);
+    const isPast = d < today;
+    const isToday = key === todayKey;
+    const dd = getDay(key);
+    const trips = (dd.dropoff ? 1 : 0) + (dd.pickup ? 1 : 0);
+    const dc = trips > 0 ? costForMiles(trips === 2 ? RETURN_MILES : ONEWAY, NURSERY_MPG, diesel) : null;
+
+    const cell = document.createElement('div');
+    cell.className = 'day-cell' + (i === 2 ? ' solo' : '') + (isPast && !isToday ? ' past' : '') + (isToday ? ' today-cell' : '');
+
+    const nm = document.createElement('p'); nm.className = 'day-name'; nm.textContent = ['Mon','Tue','Wed'][i];
+    const dt = document.createElement('p'); dt.className = 'day-date'; dt.textContent = fmtShort(d);
+    cell.appendChild(nm); cell.appendChild(dt);
+    cell.appendChild(makeCheck('Drop-off', key, 'dropoff', dd.dropoff, wk));
+    cell.appendChild(makeCheck('Pick-up', key, 'pickup', dd.pickup, wk));
+
+    const costEl = document.createElement('p');
+    costEl.className = 'day-cost';
+    costEl.textContent = dc !== null ? '£' + dc.toFixed(2) : '';
+    cell.appendChild(costEl);
+    grid.appendChild(cell);
+  }
+  block.appendChild(grid);
+
+  // Weekend
+  const wknd = document.createElement('div');
+  wknd.className = 'weekend-section';
+  const wkndTitleEl = document.createElement('div');
+  wkndTitleEl.className = 'weekend-title';
+  const sat = new Date(mon); sat.setDate(mon.getDate() + 5);
+  const sun = new Date(mon); sun.setDate(mon.getDate() + 6);
+  wkndTitleEl.textContent = 'Weekend · ' + fmtShort(sat) + '–' + fmtShort(sun);
+  wknd.appendChild(wkndTitleEl);
+
+  const tripsDiv = document.createElement('div');
+  w.wkndTrips.forEach((trip, idx) => tripsDiv.appendChild(buildTrip(wk, idx, trip, diesel)));
+  wknd.appendChild(tripsDiv);
+
+  const addBtn = document.createElement('button');
+  addBtn.className = 'add-trip-btn';
+  addBtn.textContent = '+ Add weekend journey';
+  addBtn.onclick = () => {
+    getWeek(wk).wkndTrips.push({ from: '', to: '', miles: '', mpg: DEFAULT_WKND_MPG });
+    save(); renderMonth(false);
+  };
+  wknd.appendChild(addBtn);
+  block.appendChild(wknd);
+
+  return block;
+}
+
+function buildTrip(wk, idx, trip, diesel) {
+  const card = document.createElement('div');
+  card.className = 'trip-card';
+
+  const del = document.createElement('button');
+  del.className = 'trip-delete';
+  del.textContent = '×';
+  del.onclick = () => { getWeek(wk).wkndTrips.splice(idx, 1); save(); renderMonth(false); };
+  card.appendChild(del);
+
+  // From
+  const fromRow = document.createElement('div');
+  fromRow.className = 'trip-row';
+  const fromLbl = document.createElement('label'); fromLbl.textContent = 'From';
+  const fromIn = document.createElement('input');
+  fromIn.type = 'text'; fromIn.placeholder = 'Start location'; fromIn.value = trip.from || '';
+  fromIn.addEventListener('input', () => { getWeek(wk).wkndTrips[idx].from = fromIn.value; save(); });
+  fromRow.appendChild(fromLbl); fromRow.appendChild(fromIn);
+  card.appendChild(fromRow);
+
+  // To + Calc
+  const toRow = document.createElement('div');
+  toRow.className = 'trip-row';
+  const toLbl = document.createElement('label'); toLbl.textContent = 'To';
+  const toIn = document.createElement('input');
+  toIn.type = 'text'; toIn.placeholder = 'End location'; toIn.value = trip.to || '';
+  toIn.addEventListener('input', () => { getWeek(wk).wkndTrips[idx].to = toIn.value; save(); });
+  const calcBtn = document.createElement('button');
+  calcBtn.className = 'calc-btn';
+  calcBtn.textContent = 'Calc';
+  toRow.appendChild(toLbl); toRow.appendChild(toIn); toRow.appendChild(calcBtn);
+  card.appendChild(toRow);
+
+  // Miles / MPG / cost
+  const metaRow = document.createElement('div');
+  metaRow.className = 'trip-meta';
+
+  const mWrap = document.createElement('div'); mWrap.className = 'miles-wrap';
+  const mIn = document.createElement('input');
+  mIn.type = 'number'; mIn.inputMode = 'decimal'; mIn.placeholder = '0'; mIn.step = '0.1'; mIn.min = '0';
+  mIn.value = trip.miles || '';
+  mIn.addEventListener('change', () => { getWeek(wk).wkndTrips[idx].miles = mIn.value; save(); renderMonth(false); });
+  const mUnit = document.createElement('span'); mUnit.textContent = 'miles (return)';
+  mWrap.appendChild(mIn); mWrap.appendChild(mUnit);
+
+  const mpgWrap = document.createElement('div'); mpgWrap.className = 'mpg-wrap';
+  const mpgLbl = document.createElement('label'); mpgLbl.textContent = 'MPG';
+  const mpgIn = document.createElement('input');
+  mpgIn.type = 'number'; mpgIn.inputMode = 'decimal'; mpgIn.step = '1'; mpgIn.min = '1';
+  mpgIn.value = trip.mpg || DEFAULT_WKND_MPG;
+  mpgIn.addEventListener('change', () => { getWeek(wk).wkndTrips[idx].mpg = parseFloat(mpgIn.value) || DEFAULT_WKND_MPG; save(); renderMonth(false); });
+  mpgWrap.appendChild(mpgLbl); mpgWrap.appendChild(mpgIn);
+
+  const costEl = document.createElement('span'); costEl.className = 'trip-cost';
+  const tc = costForMiles(trip.miles, trip.mpg || DEFAULT_WKND_MPG, diesel);
+  costEl.textContent = tc !== null ? '£' + tc.toFixed(2) : '—';
+
+  metaRow.appendChild(mWrap); metaRow.appendChild(mpgWrap); metaRow.appendChild(costEl);
+  card.appendChild(metaRow);
+
+  const status = document.createElement('p');
+  status.className = 'calc-status';
+  card.appendChild(status);
+
+  calcBtn.onclick = async () => {
+    const from = fromIn.value.trim(), to = toIn.value.trim();
+    if (!from || !to) { status.className = 'calc-status error'; status.textContent = 'Enter start and end locations first.'; return; }
+    calcBtn.disabled = true; calcBtn.textContent = '…';
+    status.className = 'calc-status'; status.textContent = 'Looking up route…';
+    try {
+      const oneway = await calcDistance(from, to);
+      const roundtrip = (oneway * 2).toFixed(1);
+      mIn.value = roundtrip;
+      getWeek(wk).wkndTrips[idx].miles = roundtrip;
+      save();
+      const cost = costForMiles(roundtrip, mpgIn.value, diesel);
+      status.textContent = oneway.toFixed(1) + ' mi each way · ' + roundtrip + ' mi return' + (cost ? ' · £' + cost.toFixed(2) : '');
+      renderMonth(false);
+    } catch(e) {
+      status.className = 'calc-status error';
+      status.textContent = 'Could not find route: ' + e.message;
+    } finally {
+      calcBtn.disabled = false; calcBtn.textContent = 'Calc';
+    }
+  };
+
+  return card;
+}
+
+function makeCheck(label, dayKey, field, checked, wk) {
+  const row = document.createElement('label');
+  row.className = 'check-row';
+  const cb = document.createElement('input');
+  cb.type = 'checkbox'; cb.checked = !!checked;
+  cb.addEventListener('change', () => { getDay(dayKey)[field] = cb.checked; save(); renderMonth(false); });
+  const lbl = document.createElement('span'); lbl.textContent = label;
+  row.appendChild(cb); row.appendChild(lbl);
+  return row;
+}
+
+// ── STATS ────────────────────────────────────────────────────────────────
+
+function updateStats() {
+  const weeks = getWeeksForMonth(currentMonth);
+  let runs = 0, nursery = 0, wknd = 0;
+  weeks.forEach(mon => {
+    const wk = weekKey(mon);
+    const w = getWeek(wk);
+    const d = w.diesel;
+    for (let i = 0; i < 3; i++) {
+      const day = new Date(mon); day.setDate(mon.getDate() + i);
+      const dd = getDay(dateKey(day));
+      const trips = (dd.dropoff ? 1 : 0) + (dd.pickup ? 1 : 0);
+      if (trips) { runs++; const c = costForMiles(trips === 2 ? RETURN_MILES : ONEWAY, NURSERY_MPG, d); if (c) nursery += c; }
+    }
+    w.wkndTrips.forEach(t => { const c = costForMiles(t.miles, t.mpg || DEFAULT_WKND_MPG, d); if (c) wknd += c; });
+  });
+  document.getElementById('stat-runs').textContent = runs;
+  document.getElementById('stat-nursery').textContent = '£' + nursery.toFixed(2);
+  document.getElementById('stat-weekend').textContent = '£' + wknd.toFixed(2);
+  document.getElementById('stat-total').textContent = '£' + (nursery + wknd).toFixed(2);
+}
+
+function updatePills() {
+  document.querySelectorAll('.month-pill').forEach((p, i) => p.classList.toggle('active', i === currentMonth));
+  document.getElementById('btn-prev').disabled = currentMonth === 0;
+  document.getElementById('btn-next').disabled = currentMonth === 11;
+}
+
+// ── NAVIGATION ───────────────────────────────────────────────────────────
+
+function navigateMonth(dir) {
+  const next = currentMonth + dir;
+  if (next < 0 || next > 11) return;
+  navigateMonthTo(next, dir > 0 ? 'next' : 'prev');
+}
+
+function navigateMonthTo(m, dir) {
+  if (isAnimating || m === currentMonth) return;
+  isAnimating = true;
+  const slide = document.getElementById('cal-slide');
+  const out = dir === 'next' ? '-100%' : '100%';
+  const inn = dir === 'next' ? '100%' : '-100%';
+  slide.style.transition = 'transform 0.26s ease';
+  slide.style.transform = `translateX(${out})`;
+  setTimeout(() => {
+    currentMonth = m;
+    buildPills();
+    renderMonth(true);
+    slide.style.transition = 'none';
+    slide.style.transform = `translateX(${inn})`;
+    slide.offsetHeight;
+    slide.style.transition = 'transform 0.26s ease';
+    slide.style.transform = 'translateX(0)';
+    setTimeout(() => { isAnimating = false; }, 260);
+  }, 260);
+}
+
+function goToToday() {
+  const m = today.getFullYear() === 2026 ? today.getMonth() : 5;
+  if (currentMonth !== m) {
+    navigateMonthTo(m, m > currentMonth ? 'next' : 'prev');
+  } else {
+    const el = document.getElementById('week-' + currentWeekKey);
+    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+// ── SWIPE ────────────────────────────────────────────────────────────────
+
+let tx0 = 0, ty0 = 0, tInCal = false;
+
+document.addEventListener('touchstart', e => {
+  const tag = e.target.tagName;
+  tInCal = !['INPUT','TEXTAREA','SELECT'].includes(tag) && !!e.target.closest('#cal-wrap');
+  tx0 = e.touches[0].clientX;
+  ty0 = e.touches[0].clientY;
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+  if (!tInCal || isAnimating) return;
+  const dx = e.changedTouches[0].clientX - tx0;
+  const dy = e.changedTouches[0].clientY - ty0;
+  if (Math.abs(dx) > Math.abs(dy) * 1.5 && Math.abs(dx) > 60) {
+    navigateMonth(dx < 0 ? 1 : -1);
+  }
+}, { passive: true });
+
+// ── DISTANCE ─────────────────────────────────────────────────────────────
+
+async function geocode(addr) {
+  const url = 'https://nominatim.openstreetmap.org/search?q=' + encodeURIComponent(addr) + '&format=json&limit=1&countrycodes=gb';
+  const r = await fetch(url, { headers: { 'Accept-Language': 'en-GB', 'User-Agent': 'LeonRunsTracker/1.0' } });
+  if (!r.ok) throw new Error('geocoding unavailable');
+  const data = await r.json();
+  if (!data.length) throw new Error('"' + addr + '" not found');
+  return { lat: parseFloat(data[0].lat), lon: parseFloat(data[0].lon) };
+}
+
+async function calcDistance(from, to) {
+  const [a, b] = await Promise.all([geocode(from), geocode(to)]);
+  const url = `https://router.project-osrm.org/route/v1/driving/${a.lon},${a.lat};${b.lon},${b.lat}?overview=false`;
+  const r = await fetch(url);
+  if (!r.ok) throw new Error('routing unavailable');
+  const data = await r.json();
+  if (data.code !== 'Ok' || !data.routes.length) throw new Error('no route found');
+  return data.routes[0].distance / 1609.344;
+}
+
+// ── INIT ─────────────────────────────────────────────────────────────────
+
+loadState();
+render();
+</script>
+</body>
+</html>
