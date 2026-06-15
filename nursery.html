@@ -86,6 +86,14 @@ h1.app-title{font-size:20px;font-weight:700;letter-spacing:-0.5px}
 .pay-bar{border-radius:12px;padding:13px 16px;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;background:#92400e}
 .pay-bar-label{font-size:12px;font-weight:600;color:rgba(255,255,255,0.75)}
 .pay-bar-val{font-size:22px;font-weight:700;color:#fff;letter-spacing:-0.5px}
+
+.recovery-bar{background:#fef3c7;border:1px solid #f59e0b;border-radius:12px;padding:12px 14px;margin-bottom:10px}
+.recovery-bar h3{font-size:13px;font-weight:600;color:#92400e;margin-bottom:6px}
+.recovery-bar p{font-size:12px;color:#78350f;margin-bottom:8px;line-height:1.4}
+.recovery-bar button{font-size:12px;font-weight:600;padding:6px 14px;border-radius:8px;border:none;cursor:pointer;font-family:inherit;margin-right:6px;margin-top:4px}
+.btn-import{background:#92400e;color:#fff}
+.btn-dismiss{background:#e5e5ea;color:#1c1c1e}
+pre.recovery-pre{font-size:10px;background:#fff;border-radius:6px;padding:8px;overflow-x:auto;margin-top:6px;color:#374151;max-height:80px;overflow-y:auto}
 </style>
 </head>
 <body>
@@ -93,7 +101,10 @@ h1.app-title{font-size:20px;font-weight:700;letter-spacing:-0.5px}
 <div class="header">
   <div class="header-top">
     <h1 class="app-title">León Runs</h1>
-    <button class="today-btn" onclick="goToToday()">This week</button>
+    <div style="display:flex;gap:10px;align-items:center">
+      <button class="today-btn" style="font-size:12px;color:#8e8e93" onclick="showRecoveryPanel()">⚙ Data</button>
+      <button class="today-btn" onclick="goToToday()">This week</button>
+    </div>
   </div>
   <div class="stats-row">
     <div class="stat"><span class="stat-label">Runs</span><span class="stat-val" id="stat-runs">—</span></div>
@@ -209,32 +220,48 @@ function loadState() {
   fixWeekKeys();
 }
 
+function importFromOld(oldRaw) {
+  try {
+    const old = JSON.parse(oldRaw);
+    const validWkKeys = new Set(ALL_WEEKS.map(d => weekKey(d)));
+    let imported = 0;
+    Object.entries(old).forEach(([k, v]) => {
+      if (k.startsWith('_')) return;
+      if (k.startsWith('wk_')) {
+        const parts = k.slice(3).split('-');
+        const d = new Date(2026, parseInt(parts[1]) - 1, parseInt(parts[2]));
+        const nk = weekKey(getMonday(d));
+        if (validWkKeys.has(nk)) {
+          const trips = [];
+          if (v.wkndMiles && parseFloat(v.wkndMiles) > 0)
+            trips.push({ from: '', to: '', miles: String(v.wkndMiles), mpg: DEFAULT_WKND_MPG });
+          // Always overwrite with old data (old data is the authoritative source)
+          state.weeks[nk] = { diesel: v.diesel ?? null, wkndTrips: trips };
+          imported++;
+        }
+      } else if (v && typeof v === 'object' && ('dropoff' in v || 'pickup' in v)) {
+        const nk = k.replace('2025', '2026');
+        state.days[nk] = v;
+        if (v.dropoff || v.pickup) imported++;
+      }
+    });
+    return imported;
+  } catch(e) { console.warn('Import error:', e); return -1; }
+}
+
 function migrateOld() {
   try {
     const raw = localStorage.getItem('leon-tracker-2025');
     if (!raw) return;
     const old = JSON.parse(raw);
-    const validWkKeys = new Set(ALL_WEEKS.map(d => weekKey(d)));
-    Object.entries(old).forEach(([k, v]) => {
-      if (k.startsWith('wk_')) {
-        // Find the correct Monday in 2026 for this old week
-        const parts = k.slice(3).split('-');
-        const d = new Date(2026, parseInt(parts[1]) - 1, parseInt(parts[2]));
-        const nk = weekKey(getMonday(d));
-        if (validWkKeys.has(nk) && !state.weeks[nk]) {
-          const trips = [];
-          if (v.wkndMiles && parseFloat(v.wkndMiles) > 0)
-            trips.push({ from: '', to: '', miles: String(v.wkndMiles), mpg: DEFAULT_WKND_MPG });
-          state.weeks[nk] = { diesel: v.diesel ?? null, wkndTrips: trips };
-        }
-      } else if (v && typeof v === 'object' && ('dropoff' in v || 'pickup' in v)) {
-        const nk = k.replace('2025', '2026');
-        if (!state.days[nk]) state.days[nk] = v;
-      }
-    });
-    localStorage.removeItem('leon-tracker-2025');
+    if (old._migrated) return; // already processed
+    const count = importFromOld(raw);
+    // Mark as migrated but preserve the data
+    old._migrated = true; old._migratedAt = Date.now();
+    try { localStorage.setItem('leon-tracker-2025', JSON.stringify(old)); } catch(e) {}
     save();
-  } catch(e) {}
+    console.log('Migrated', count, 'entries from old app');
+  } catch(e) { console.warn('Migration error:', e); }
 }
 
 // Fix week keys that were migrated with naive year replacement (wk_2026-04-21 → wk_2026-04-20)
@@ -247,10 +274,8 @@ function fixWeekKeys() {
     const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
     const nk = weekKey(getMonday(d));
     if (validKeys.has(nk)) {
-      if (!state.weeks[nk]) {
-        state.weeks[nk] = state.weeks[k];
-      } else {
-        // Merge: fill empty fields in the existing entry
+      if (!state.weeks[nk]) state.weeks[nk] = state.weeks[k];
+      else {
         if (state.weeks[nk].diesel === null && state.weeks[k].diesel !== null)
           state.weeks[nk].diesel = state.weeks[k].diesel;
         if (!state.weeks[nk].wkndTrips.length && state.weeks[k].wkndTrips && state.weeks[k].wkndTrips.length)
@@ -260,6 +285,64 @@ function fixWeekKeys() {
     delete state.weeks[k];
   });
   save();
+}
+
+function showRecoveryPanel() {
+  const old = localStorage.getItem('leon-tracker-2025');
+  const newData = localStorage.getItem('leon-tracker-2026');
+  const bar = document.createElement('div');
+  bar.className = 'recovery-bar';
+  bar.id = 'recovery-bar';
+
+  let oldInfo = '❌ Not found in this browser';
+  let canImport = false;
+  if (old) {
+    try {
+      const parsed = JSON.parse(old);
+      const wks = Object.keys(parsed).filter(k => k.startsWith('wk_')).length;
+      const days = Object.keys(parsed).filter(k => !k.startsWith('wk_') && !k.startsWith('_')).length;
+      oldInfo = `✓ Found: ${wks} weeks, ${days} day entries${parsed._migrated ? ' (previously imported)' : ''}`;
+      canImport = true;
+    } catch(e) { oldInfo = '⚠️ Found but unreadable'; }
+  }
+
+  let newInfo = '(empty)';
+  if (newData) {
+    try {
+      const parsed = JSON.parse(newData);
+      const wks = Object.keys(parsed.weeks || {}).length;
+      const days = Object.keys(parsed.days || {}).filter(k => { const d = parsed.days[k]; return d.dropoff || d.pickup; }).length;
+      newInfo = `${wks} weeks, ${days} checked days`;
+    } catch(e) { newInfo = 'unreadable'; }
+  }
+
+  bar.innerHTML = `
+    <h3>📦 Data Recovery</h3>
+    <p><strong>Old app data:</strong> ${oldInfo}</p>
+    <p><strong>Current app data:</strong> ${newInfo}</p>
+    ${canImport ? `<button class="btn-import" onclick="doManualImport()">Re-import from old app</button>` : ''}
+    <button class="btn-dismiss" onclick="document.getElementById('recovery-bar').remove()">Dismiss</button>
+    <pre class="recovery-pre" id="recovery-log"></pre>
+  `;
+  const cal = document.getElementById('calendar');
+  cal.insertBefore(bar, cal.firstChild);
+}
+
+function doManualImport() {
+  const raw = localStorage.getItem('leon-tracker-2025');
+  if (!raw) { document.getElementById('recovery-log').textContent = 'No old data found.'; return; }
+  try {
+    const parsed = JSON.parse(raw);
+    parsed._migrated = false; // force re-import
+    const count = importFromOld(JSON.stringify(parsed));
+    parsed._migrated = true; parsed._migratedAt = Date.now();
+    localStorage.setItem('leon-tracker-2025', JSON.stringify(parsed));
+    save();
+    document.getElementById('recovery-log').textContent = `✓ Imported ${count} entries. Refreshing…`;
+    setTimeout(() => { renderMonth(true); document.getElementById('recovery-bar').remove(); }, 800);
+  } catch(e) {
+    document.getElementById('recovery-log').textContent = 'Error: ' + e.message;
+  }
 }
 
 // ── RENDER ───────────────────────────────────────────────────────────────
