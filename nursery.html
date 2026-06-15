@@ -206,6 +206,7 @@ function loadState() {
     if (!state.weeks) state.weeks = {};
   } catch(e) { state = { days: {}, weeks: {} }; }
   migrateOld();
+  fixWeekKeys();
 }
 
 function migrateOld() {
@@ -213,22 +214,52 @@ function migrateOld() {
     const raw = localStorage.getItem('leon-tracker-2025');
     if (!raw) return;
     const old = JSON.parse(raw);
+    const validWkKeys = new Set(ALL_WEEKS.map(d => weekKey(d)));
     Object.entries(old).forEach(([k, v]) => {
-      const nk = k.replace(/2025/g, '2026');
       if (k.startsWith('wk_')) {
-        if (!state.weeks[nk]) {
+        // Find the correct Monday in 2026 for this old week
+        const parts = k.slice(3).split('-');
+        const d = new Date(2026, parseInt(parts[1]) - 1, parseInt(parts[2]));
+        const nk = weekKey(getMonday(d));
+        if (validWkKeys.has(nk) && !state.weeks[nk]) {
           const trips = [];
           if (v.wkndMiles && parseFloat(v.wkndMiles) > 0)
             trips.push({ from: '', to: '', miles: String(v.wkndMiles), mpg: DEFAULT_WKND_MPG });
           state.weeks[nk] = { diesel: v.diesel ?? null, wkndTrips: trips };
         }
       } else if (v && typeof v === 'object' && ('dropoff' in v || 'pickup' in v)) {
+        const nk = k.replace('2025', '2026');
         if (!state.days[nk]) state.days[nk] = v;
       }
     });
     localStorage.removeItem('leon-tracker-2025');
     save();
   } catch(e) {}
+}
+
+// Fix week keys that were migrated with naive year replacement (wk_2026-04-21 → wk_2026-04-20)
+function fixWeekKeys() {
+  const validKeys = new Set(ALL_WEEKS.map(d => weekKey(d)));
+  const badKeys = Object.keys(state.weeks).filter(k => !validKeys.has(k));
+  if (!badKeys.length) return;
+  badKeys.forEach(k => {
+    const parts = k.slice(3).split('-');
+    const d = new Date(parseInt(parts[0]), parseInt(parts[1]) - 1, parseInt(parts[2]));
+    const nk = weekKey(getMonday(d));
+    if (validKeys.has(nk)) {
+      if (!state.weeks[nk]) {
+        state.weeks[nk] = state.weeks[k];
+      } else {
+        // Merge: fill empty fields in the existing entry
+        if (state.weeks[nk].diesel === null && state.weeks[k].diesel !== null)
+          state.weeks[nk].diesel = state.weeks[k].diesel;
+        if (!state.weeks[nk].wkndTrips.length && state.weeks[k].wkndTrips && state.weeks[k].wkndTrips.length)
+          state.weeks[nk].wkndTrips = state.weeks[k].wkndTrips;
+      }
+    }
+    delete state.weeks[k];
+  });
+  save();
 }
 
 // ── RENDER ───────────────────────────────────────────────────────────────
