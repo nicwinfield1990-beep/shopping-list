@@ -191,7 +191,7 @@ position: relative;
 
 textarea {
 width: 100%;
-min-height: 360px;
+min-height: clamp(150px, 40vh, 360px);
 padding: 18px 20px;
 border: none;
 background: transparent;
@@ -801,22 +801,20 @@ border-radius: 14px 14px 0 0;
       <div class="error-banner" id="errorBanner"></div>
     </div>
 
-```
-<!-- VIEW 2: ORGANISED -->
-<div class="organised-view" id="organisedView">
-  <div class="list-meta">
-    <div class="list-count" id="listCount"></div>
-    <button class="clear-done-btn" onclick="clearDone()">Remove ticked</button>
-  </div>
-  <div id="categoryList">
-    <div class="empty-state">
-      <div class="empty-icon">🛒</div>
-      <p>Your organised list will appear here.<br>Type items in the Free-type tab first.</p>
+    <!-- VIEW 2: ORGANISED -->
+    <div class="organised-view" id="organisedView">
+      <div class="list-meta">
+        <div class="list-count" id="listCount"></div>
+        <button class="clear-done-btn" onclick="clearDone()">Remove ticked</button>
+      </div>
+      <div id="categoryList">
+        <div class="empty-state">
+          <div class="empty-icon">🛒</div>
+          <p>Your organised list will appear here.<br>Type items in the Free-type tab first.</p>
+        </div>
+      </div>
+      <button class="nuclear-btn" onclick="completeShop()">☢️ Complete Shop</button>
     </div>
-  </div>
-  <button class="nuclear-btn" onclick="completeShop()">☢️ Complete Shop</button>
-</div>
-```
 
   </div>
 </div>
