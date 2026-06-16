@@ -4,6 +4,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Winfi-list inc">
 <title>Winfi-list inc</title>
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
@@ -47,7 +50,8 @@ position: sticky;
 top: 0;
 z-index: 20;
 background: var(--cream-dark);
-padding: 20px 20px 0;
+padding: env(safe-area-inset-top, 20px) 20px 0;
+padding-top: max(20px, env(safe-area-inset-top));
 display: flex;
 align-items: center;
 justify-content: space-between;
@@ -2199,6 +2203,14 @@ document.getElementById('notepadText').addEventListener('input', () => {
 setInterval(() => {
   localStorage.setItem('shopsmart_items', JSON.stringify(items));
 }, 3000);
+
+// iOS standalone mode: inputs don't always focus on tap — force it
+document.addEventListener('touchend', function(e) {
+  const el = e.target;
+  if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
+    setTimeout(() => el.focus(), 0);
+  }
+}, false);
 </script>
 
 </body>
