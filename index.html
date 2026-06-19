@@ -1132,7 +1132,7 @@ const CATEGORY_KEYWORDS = {
     'potato','onion','garlic','carrot','broccoli','cauliflower','spinach','lettuce',
     'salad','cucumber','pepper','courgette','aubergine','mushroom','celery','leek',
     'parsnip','turnip','swede','celeriac','cabbage','kale','beetroot','sweetcorn',
-    'asparagus','artichoke','fennel','radish','shallot','rocket',
+    'asparagus','artichoke','fennel','radish','shallot','rocket','tomato',
     'veg','vegetables','vegetable','fruit','fresh produce','herb pot'
   ],
   bakery: [
@@ -1157,7 +1157,7 @@ const CATEGORY_KEYWORDS = {
     'garlic bread baguette','garlic dough ball','tear and share',
     'sandwich thin','thin bagel','protein bun',
     'warburtons','hovis','kingsmill','roberts bakery','genius gluten free',
-    'bread','loaf','pastry','cake'
+    'bread','loaf','pastry','cake','tortilla','wrap','flatbread','pitta'
   ],
   meat: [
     'chicken breast fillet','chicken breast pack','chicken thigh fillet','chicken thigh bone in',
@@ -1599,7 +1599,8 @@ const CATEGORY_KEYWORDS = {
     'tinned new potato','tinned carrot',
     'heinz spaghetti','heinz spaghetti hoops','heinz ravioli',
     'chickpea','lentil','black bean','butter bean','kidney bean','cannellini',
-    'napolina','cirio','del monte','dole tinned','princes tinned','john west'
+    'napolina','cirio','del monte','dole tinned','princes tinned','john west',
+    'baked bean','bean','soup','tinned tomato','passata'
   ],
   rice_spices: [
     'tilda basmati rice','tilda easy cook basmati','uncle ben\'s express rice',
@@ -2200,12 +2201,12 @@ setInterval(() => {
   localStorage.setItem('shopsmart_items', JSON.stringify(items));
 }, 3000);
 
-// iOS standalone mode: force focus synchronously on touchstart (setTimeout breaks it)
-document.addEventListener('touchstart', function(e) {
-  const el = e.target;
-  if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') {
-    el.focus();
-  }
+// iOS standalone mode: force focus synchronously on touchstart (setTimeout breaks it).
+// Scoped to the notepad only — a document-wide listener would force-focus item
+// inputs in the Organised view on every touch (including scroll gestures),
+// popping the keyboard and turning scrolls into text selection.
+document.getElementById('notepadText').addEventListener('touchstart', function(e) {
+  e.currentTarget.focus();
 }, {passive: true});
 </script>
 
