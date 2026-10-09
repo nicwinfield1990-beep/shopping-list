@@ -1206,7 +1206,7 @@ const CATEGORY_KEYWORDS = {
     'asparagus','artichoke','fennel','radish','shallot','rocket','tomato',
     'veg','vegetables','vegetable','fruit','fresh produce','herb pot',
     'corn','fresh chilli','chilli pepper',
-    'little gem','mint','rhubarb','easy peeler','spring greens','pea','green bean','coleslaw','fresh herb','kumquat','lemon','ginger','spring onion','corn on the cob','beansprout','bean sprout','sprout'
+    'little gem','mint','parsley','basil','chives','dill','rhubarb','easy peeler','spring greens','pea','green bean','coleslaw','fresh herb','kumquat','lemon','ginger','spring onion','corn on the cob','beansprout','bean sprout','sprout'
   ],
   bakery: [
     'seeded wholemeal loaf','seeded white loaf','tiger bread loaf','sourdough loaf',
@@ -1732,7 +1732,7 @@ const CATEGORY_KEYWORDS = {
     'rice','basmati','spice','spices','seasoning','herbs','paprika','turmeric',
     'cumin','coriander','garam masala','curry powder','cinnamon','nutmeg',
     'garlic powder','onion powder','mixed herbs','bay leaf','black pepper','sea salt',
-    'chilli powder','chilli flakes','oregano','bay leaves','bay leaf','salt','pepper grinder','ground ginger','thyme','rosemary','sage','dried parsley','cloves','cardamom','saffron','paprika','cumin','turmeric','cinnamon','nutmeg','ground coriander','mixed herbs','mixed spice','garlic granule','curry powder','garam masala','peppercorn'
+    'dried basil','dried dill','dried chives','dried mint','dried tarragon','dried thyme','dried sage','chilli powder','chilli flakes','oregano','bay leaves','bay leaf','salt','pepper grinder','ground ginger','thyme','rosemary','sage','dried parsley','cloves','cardamom','saffron','paprika','cumin','turmeric','cinnamon','nutmeg','ground coriander','mixed herbs','mixed spice','garlic granule','curry powder','garam masala','peppercorn'
   ],
   world_foods: [
     'sriracha','wasabi','oyster sauce','hoisin sauce','teriyaki sauce','fish sauce','soy sauce','miso paste','kimchi','poppadom','taco shell','fajita kit','pad thai kit','thai green curry paste','thai red curry paste','curry paste','bulgur wheat','quinoa','ramen','tilda','uncle bens','sharwoods','naan bread mix','coconut cream','noodle','noodles','pot noodle','super noodle','rice','basmati','couscous','taco','fajita','tortilla chip kit','black bean sauce','sweet chilli sauce','sweet chilli','korma','tikka masala','jalfrezi','balti','rogan josh','curry sauce','cooking sauce','sweet and sour','stir fry','pearl barley','blue dragon','amoy','patak','pataks','schwartz','dried noodle','egg noodle','rice noodle','tahini','harissa','falafel','hummus mix','tofu','sushi rice','seaweed','nori','mirin','gochujang','laksa','tom yum','dumpling'
@@ -1936,7 +1936,7 @@ const AISLE_DEFAULT = {
 const AISLE_RULES = {
   fruit_veg: [
     [/pepper|potato|squash|pumpkin|mushroom|cabbage|corn|chilli|ginger/, 'veg'],
-    [/salad|slaw|lettuce|gem|rocket|watercress|cucumber|leaf|leaves|radish|spring onion|tomato|spinach|herb|coriander|parsley|basil|mint|thyme|rosemary/, 'salad'],
+    [/salad|slaw|lettuce|gem|rocket|chive|dill|watercress|cucumber|leaf|leaves|radish|spring onion|tomato|spinach|herb|coriander|parsley|basil|mint|thyme|rosemary/, 'salad'],
     [/rhubarb|easy peeler|avocado|papaya|passion fruit|plantain|dragon fruit|lychee|starfruit|pomegranate|grape|clementine|satsuma|mandarin|melon|plum|nectarine|peach|apricot|\bfig\b|\bdate\b|berry|cherry|apple|pear|banana|orange|lemon|lime|mango|pineapple|kiwi|^fruit$/, 'fruit'],
   ],
   dairy: [
@@ -1989,6 +1989,8 @@ function hasWord(text, keyword) {
   return needlesFor(keyword).some(n => text.includes(n));
 }
 
+const FRESH_HERBS = ['coriander', 'parsley', 'basil', 'mint', 'chives', 'dill', 'thyme', 'rosemary', 'sage', 'tarragon', 'oregano', 'lemongrass'];
+
 const HEAD_NOUNS = {
   yoghurt: 'yoghurt', yogurt: 'yoghurt', juice: 'soft_drinks', stock: 'sauces_stocks',
   oil: 'tinned', vinegar: 'tinned', biscuit: 'sweet_biscuits', cookie: 'sweet_biscuits',
@@ -2003,6 +2005,13 @@ function guessCategory(name) {
     return (hasWord(text, 'fresh') || hasWord(text, 'chilled')) ? 'ready_meals' : 'sauces_stocks';
   }
   if (hasWord(text, 'frozen')) return 'frozen';
+  // Fresh herbs ('coriander (fresh)', 'bunch of parsley', 'basil pot') live with the salad;
+  // dried / ground / seeds stay with the spices.
+  if (FRESH_HERBS.some(h => hasWord(text, h)) &&
+      ['fresh', 'bunch', 'pot', 'leaves'].some(w => hasWord(text, w)) &&
+      !['dried', 'ground', 'seed', 'powder', 'jar', 'granule', 'flake', 'paste', 'sauce', 'tea'].some(w => hasWord(text, w))) {
+    return 'salad';
+  }
   for (const trigger of TINNED_TRIGGERS) {
     if (hasWord(text, trigger)) return 'tinned';
   }
