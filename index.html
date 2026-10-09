@@ -28,7 +28,7 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-font-family: ‘DM Sans’, sans-serif;
+font-family: 'DM Sans', sans-serif;
 background: var(--cream-dark);
 color: var(--ink);
 min-height: 100vh;
@@ -54,7 +54,7 @@ justify-content: space-between;
 }
 
 .logo {
-font-family: ‘Lora’, serif;
+font-family: 'Lora', serif;
 font-size: 22px;
 font-weight: 600;
 color: var(--ink);
@@ -80,7 +80,7 @@ border-radius: 20px;
 border: 1.5px solid var(--ink-faint);
 background: transparent;
 cursor: pointer;
-font-family: ‘DM Sans’, sans-serif;
+font-family: 'DM Sans', sans-serif;
 font-size: 12px;
 color: var(--ink-light);
 transition: all 0.2s;
@@ -127,7 +127,7 @@ border: none;
 background: transparent;
 border-radius: 26px;
 cursor: pointer;
-font-family: ‘DM Sans’, sans-serif;
+font-family: 'DM Sans', sans-serif;
 font-size: 14px;
 font-weight: 400;
 color: var(--ink-light);
@@ -175,7 +175,7 @@ justify-content: space-between;
 }
 
 .notepad-label {
-font-family: ‘Lora’, serif;
+font-family: 'Lora', serif;
 font-style: italic;
 font-size: 14px;
 color: var(--ink-light);
@@ -196,7 +196,7 @@ min-height: clamp(150px, 40vh, 360px);
 padding: 18px 20px;
 border: none;
 background: transparent;
-font-family: ‘DM Sans’, sans-serif;
+font-family: 'DM Sans', sans-serif;
 font-size: 16px;
 line-height: 2;
 color: var(--ink);
@@ -232,7 +232,7 @@ padding: 10px 20px;
 border-radius: 8px;
 border: none;
 cursor: pointer;
-font-family: ‘DM Sans’, sans-serif;
+font-family: 'DM Sans', sans-serif;
 font-size: 14px;
 font-weight: 500;
 transition: all 0.2s;
@@ -297,7 +297,7 @@ color: var(--rust);
 background: none;
 border: none;
 cursor: pointer;
-font-family: ‘DM Sans’, sans-serif;
+font-family: 'DM Sans', sans-serif;
 padding: 4px 0;
 }
 
@@ -310,7 +310,7 @@ color: var(--ink-faint);
 .empty-icon { font-size: 48px; margin-bottom: 12px; }
 
 .empty-state p {
-font-family: ‘Lora’, serif;
+font-family: 'Lora', serif;
 font-style: italic;
 font-size: 15px;
 }
@@ -350,7 +350,7 @@ flex-shrink: 0;
 }
 
 .category-name {
-font-family: ‘Lora’, serif;
+font-family: 'Lora', serif;
 font-size: 14px;
 font-weight: 600;
 color: var(--ink);
@@ -407,10 +407,10 @@ transition: background 0.15s;
 }
 
 .item-row:last-child { border-bottom: none; }
-.item-row:hover { background: rgba(176,160,144,0.06); }
+@media (hover: hover) { .item-row:hover { background: #f3eee4; } }
 
 .item-row.checked {
-background: rgba(61,107,74,0.04);
+background: #f1f0e5;
 }
 
 /* CUSTOM CHECKBOX */
@@ -435,7 +435,7 @@ transform: scale(1.08);
 }
 
 .item-checkbox::after {
-content: ‘’;
+content: '';
 width: 6px;
 height: 11px;
 border: 2.5px solid white;
@@ -454,13 +454,11 @@ min-width: 0;
 }
 
 .item-name {
-font-size: 15px;
+font-size: 16px;
+line-height: 1.3;
 color: var(--ink);
 transition: color 0.15s;
-display: block;
-white-space: nowrap;
-overflow: hidden;
-text-overflow: ellipsis;
+overflow-wrap: anywhere;
 }
 
 .item-row.checked .item-name {
@@ -468,110 +466,6 @@ color: var(--ink-faint);
 text-decoration: line-through;
 text-decoration-color: var(--green-mid);
 }
-
-.item-qty {
-font-size: 12px;
-color: var(--ink-faint);
-font-weight: 500;
-margin-top: 1px;
-}
-
-/* INLINE EDIT */
-.item-edit-input {
-border: none;
-outline: none;
-background: transparent;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 16px;
-color: var(--ink);
-width: 100%;
--webkit-user-select: text;
-user-select: text;
-touch-action: manipulation;
-}
-
-.item-qty-input {
-border: none;
-outline: none;
-background: transparent;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 16px;
-color: var(--ink-faint);
-width: 100%;
--webkit-user-select: text;
-user-select: text;
-touch-action: manipulation;
-}
-
-.item-actions {
-display: flex;
-gap: 4px;
-opacity: 0;
-transition: opacity 0.15s;
-}
-
-.item-row:hover .item-actions { opacity: 1; }
-
-.item-action-btn {
-width: 28px;
-height: 28px;
-border-radius: 6px;
-border: none;
-background: transparent;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 14px;
-transition: background 0.15s;
-color: var(--ink-light);
-}
-
-.item-action-btn:hover { background: var(--cream-dark); }
-.item-action-btn.delete:hover { background: var(--rust-light); color: var(--rust); }
-
-/* ADD ITEM ROW */
-.add-item-row {
-display: flex;
-align-items: center;
-padding: 10px 16px;
-gap: 10px;
-border-top: 1px dashed var(--cream-dark);
-}
-
-.add-item-input {
-flex: 1;
-border: none;
-outline: none;
-background: transparent;
-font-family: ‘DM Sans’, sans-serif;
-font-size: 16px;
-color: var(--ink);
-padding: 4px 0;
--webkit-user-select: text;
-user-select: text;
-touch-action: manipulation;
-}
-
-.add-item-input::placeholder { color: var(--ink-faint); font-style: italic; }
-
-.add-item-btn {
-width: 28px;
-height: 28px;
-border-radius: 6px;
-border: none;
-background: var(--green);
-color: white;
-cursor: pointer;
-font-size: 18px;
-display: flex;
-align-items: center;
-justify-content: center;
-flex-shrink: 0;
-transition: background 0.15s;
-}
-
-.add-item-btn:hover { background: #237050; }
 
 /* PARSING INDICATOR */
 .parsing-overlay {
@@ -608,7 +502,7 @@ margin: 0 auto 14px;
 @keyframes spin { to { transform: rotate(360deg); } }
 
 .parsing-card p {
-font-family: ‘Lora’, serif;
+font-family: 'Lora', serif;
 font-style: italic;
 color: var(--ink-light);
 font-size: 15px;
@@ -724,7 +618,7 @@ border-radius: 14px;
 border: none;
 background: linear-gradient(180deg, #e03030 0%, #b01010 100%);
 color: white;
-font-family: ‘DM Sans’, sans-serif;
+font-family: 'DM Sans', sans-serif;
 font-size: 18px;
 font-weight: 700;
 letter-spacing: 0.3px;
@@ -746,13 +640,174 @@ box-shadow: 0 1px 0 #7a0000, 0 2px 8px rgba(176,16,16,0.3);
 }
 
 .nuclear-btn::before {
-content: ‘’;
+content: '';
 position: absolute;
 top: 0; left: 0; right: 0;
 height: 50%;
 background: rgba(255,255,255,0.08);
 border-radius: 14px 14px 0 0;
 }
+
+/* LIST — TAP ROWS, QUICK ADD, EDITOR */
+.quick-add {
+display: flex;
+align-items: center;
+gap: 8px;
+background: var(--cream);
+border-radius: var(--radius);
+box-shadow: var(--paper-shadow);
+padding: 6px 6px 6px 16px;
+}
+
+.quick-add input {
+flex: 1;
+min-width: 0;
+border: none;
+outline: none;
+background: transparent;
+font-family: 'DM Sans', sans-serif;
+font-size: 16px;
+color: var(--ink);
+padding: 10px 0;
+-webkit-user-select: text;
+user-select: text;
+touch-action: manipulation;
+}
+
+.quick-add input::placeholder { color: var(--ink-faint); font-style: italic; }
+
+.quick-add-btn {
+width: 42px;
+height: 42px;
+border-radius: 10px;
+border: none;
+background: var(--green);
+color: white;
+font-size: 24px;
+line-height: 1;
+cursor: pointer;
+flex-shrink: 0;
+}
+
+.quick-add-btn:active { background: #237050; }
+
+.quick-add-hint {
+min-height: 18px;
+margin: 4px 4px 4px;
+font-size: 13px;
+color: var(--ink-light);
+}
+
+.overall-progress {
+height: 4px;
+border-radius: 2px;
+background: var(--cream);
+margin: -6px 0 16px;
+overflow: hidden;
+}
+
+.overall-progress-fill {
+height: 100%;
+width: 0;
+background: var(--green);
+transition: width 0.3s ease;
+}
+
+.clear-done-btn { padding: 6px 0 6px 12px; }
+
+.category-group.all-done { opacity: 0.75; }
+
+.item-row {
+padding: 12px 8px 12px 16px;
+min-height: 52px;
+cursor: pointer;
+-webkit-tap-highlight-color: transparent;
+-webkit-user-select: none;
+user-select: none;
+}
+
+.item-row:active { background: #ece6d8; }
+
+.item-content {
+display: flex;
+align-items: center;
+gap: 10px;
+}
+
+.item-content .item-name { flex: 1; min-width: 0; }
+
+.item-qty-pill {
+flex-shrink: 0;
+font-size: 12px;
+font-weight: 500;
+color: var(--ink-light);
+background: var(--cream-dark);
+padding: 3px 9px;
+border-radius: 10px;
+}
+
+.item-row.checked .item-qty-pill { opacity: 0.5; }
+
+.item-edit-btn {
+width: 44px;
+height: 44px;
+flex-shrink: 0;
+border: none;
+background: transparent;
+color: var(--ink-faint);
+font-size: 18px;
+cursor: pointer;
+border-radius: 8px;
+}
+
+.item-editor {
+padding: 12px 16px 14px;
+background: var(--cream-dark);
+border-bottom: 1px solid var(--cream-dark);
+display: flex;
+flex-direction: column;
+gap: 8px;
+}
+
+.editor-row { display: flex; gap: 8px; }
+
+.editor-input, .editor-select {
+width: 100%;
+min-width: 0;
+border: 1.5px solid transparent;
+border-radius: 8px;
+background: white;
+font-family: 'DM Sans', sans-serif;
+font-size: 16px;
+color: var(--ink);
+padding: 10px 12px;
+outline: none;
+-webkit-user-select: text;
+user-select: text;
+touch-action: manipulation;
+}
+
+.editor-input:focus, .editor-select:focus { border-color: var(--green-mid); }
+.editor-input.qty { flex: 0 0 38%; }
+.editor-select { flex: 1; }
+
+.editor-actions { display: flex; gap: 8px; }
+
+.editor-btn {
+flex: 1;
+padding: 11px;
+border-radius: 8px;
+border: 1.5px solid var(--ink-faint);
+background: transparent;
+font-family: 'DM Sans', sans-serif;
+font-size: 14px;
+font-weight: 500;
+color: var(--ink-light);
+cursor: pointer;
+}
+
+.editor-btn.primary { background: var(--green); border-color: var(--green); color: white; }
+.editor-btn.danger { color: var(--rust); border-color: var(--rust); }
 
 /* SCROLLBAR */
 ::-webkit-scrollbar { width: 4px; }
@@ -816,10 +871,17 @@ border-radius: 14px 14px 0 0;
 
     <!-- VIEW 2: ORGANISED -->
     <div class="organised-view" id="organisedView">
+      <form class="quick-add" onsubmit="quickAdd(event)" autocomplete="off">
+        <input id="quickAddInput" type="text" placeholder="Add an item…" enterkeyhint="done"
+          autocapitalize="sentences" autocomplete="off" aria-label="Add an item" />
+        <button type="submit" class="quick-add-btn" aria-label="Add item">+</button>
+      </form>
+      <div class="quick-add-hint" id="quickAddHint" aria-live="polite"></div>
       <div class="list-meta">
         <div class="list-count" id="listCount"></div>
-        <button class="clear-done-btn" onclick="clearDone()">Remove ticked</button>
+        <button class="clear-done-btn" id="clearDoneBtn" onclick="clearDone()">Remove ticked</button>
       </div>
+      <div class="overall-progress"><div class="overall-progress-fill" id="overallFill"></div></div>
       <div id="categoryList">
         <div class="empty-state">
           <div class="empty-icon">🛒</div>
@@ -835,39 +897,43 @@ border-radius: 14px 14px 0 0;
 <script>
 // ─── CATEGORIES ───────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { id: 'baby',          name: 'Baby',                              emoji: '🍼', color: '#e84393' },
-  { id: 'medicine',      name: 'Medicine & Pharmacy',               emoji: '💊', color: '#3498db' },
-  { id: 'shower',        name: 'Bathroom / Shower / Hair',          emoji: '🚿', color: '#9b59b6' },
-  { id: 'fruit_veg',     name: 'Fruit & Veg',                       emoji: '🥦', color: '#27ae60' },
-  { id: 'bakery',        name: 'Bakery',                            emoji: '🍞', color: '#e67e22' },
-  { id: 'meat',          name: 'Meat',                              emoji: '🥩', color: '#e74c3c' },
-  { id: 'fish',          name: 'Fish',                              emoji: '🐟', color: '#1abc9c' },
-  { id: 'cooked_meats',  name: 'Cooked Meats',                      emoji: '🍖', color: '#a93226' },
-  { id: 'ready_meals',   name: 'Ready Meals',                       emoji: '🍱', color: '#d68910' },
-  { id: 'dairy',         name: 'Dairy',                             emoji: '🥛', color: '#0097a7' },
-  { id: 'beer_wine',     name: 'Alcohol',                           emoji: '🍷', color: '#7d3c98' },
-  { id: 'soft_drinks',   name: 'Soft Drinks',                       emoji: '🧃', color: '#2196f3' },
-  { id: 'tea_coffee',    name: 'Tea & Coffee',                      emoji: '☕', color: '#795548' },
-  { id: 'cereals',       name: 'Cereals',                           emoji: '🥣', color: '#d4a017' },
-  { id: 'home_baking',   name: 'Eggs, Baking & Nuts',               emoji: '🥚', color: '#b7860b' },
-  { id: 'confectionery', name: 'Confectionery',                     emoji: '🍫', color: '#884ea0' },
-  { id: 'crisps',        name: 'Crisps, Snacks & Savoury Biscuits', emoji: '🥨', color: '#c8a200' },
-  { id: 'sweet_biscuits',name: 'Sweet Biscuits',                    emoji: '🍪', color: '#a0522d' },
-  { id: 'sauces_stocks', name: 'Sauces, Stocks & Gravy',            emoji: '🫙', color: '#d35400' },
-  { id: 'tinned',        name: 'Tinned & Canned Goods',             emoji: '🥫', color: '#2471a3' },
-  { id: 'rice_spices',   name: 'Rice & Spices',                     emoji: '🌶️', color: '#b03060' },
-  { id: 'pasta_sauces',  name: 'Pasta, Noodles & Jar Sauces',       emoji: '🍝', color: '#c0562a' },
-  { id: 'frozen',        name: 'Freezer',                           emoji: '🧊', color: '#5dade2' },
-  { id: 'cleaning',      name: 'Cleaning & Kitchen',                emoji: '🧹', color: '#16a085' },
-  { id: 'pet',           name: 'Dog Food & Treats',                 emoji: '🐕', color: '#a0785a' },
-  { id: 'laundry',       name: 'Laundry',                           emoji: '🧺', color: '#546e7a' },
-  { id: 'other',         name: 'Other',                             emoji: '🛍️', color: '#95a5a6' },
+  { id: 'baby',          name: 'Baby',                                      emoji: '🍼', color: '#e84393' },
+  { id: 'shower',        name: 'Bath & Shower',                             emoji: '🚿', color: '#9b59b6' },
+  { id: 'medicine',      name: 'Medicine',                                  emoji: '💊', color: '#3498db' },
+  { id: 'veg',           name: 'Veg',                                       emoji: '🥦', color: '#27ae60' },
+  { id: 'fruit',         name: 'Fruit',                                     emoji: '🍎', color: '#e8590c' },
+  { id: 'salad',         name: 'Salad',                                     emoji: '🥬', color: '#51a64b' },
+  { id: 'bakery',        name: 'Bakery',                                    emoji: '🍞', color: '#e67e22' },
+  { id: 'meat',          name: 'Meat',                                      emoji: '🥩', color: '#e74c3c' },
+  { id: 'fish',          name: 'Fish',                                      emoji: '🐟', color: '#1abc9c' },
+  { id: 'cooked_meats',  name: 'Cooked Meat',                               emoji: '🍖', color: '#a93226' },
+  { id: 'ready_meals',   name: 'Ready Meals',                               emoji: '🍱', color: '#d68910' },
+  { id: 'cheese_butter', name: 'Cheese, Butter & Cream',                    emoji: '🧀', color: '#f0a500' },
+  { id: 'yoghurt',       name: 'Yoghurt & Desserts',                        emoji: '🍮', color: '#0097a7' },
+  { id: 'milk',          name: 'Milk',                                      emoji: '🥛', color: '#4a90d9' },
+  { id: 'beer',          name: 'Beer & Cider',                              emoji: '🍺', color: '#b8860b' },
+  { id: 'wine',          name: 'Wine & Spirits',                            emoji: '🍷', color: '#7d3c98' },
+  { id: 'soft_drinks',   name: 'Soft Drinks',                               emoji: '🧃', color: '#2196f3' },
+  { id: 'sweet_biscuits',name: 'Biscuits',                                  emoji: '🍪', color: '#a0522d' },
+  { id: 'crisps',        name: 'Crisps & Snacks',                           emoji: '🥨', color: '#c8a200' },
+  { id: 'confectionery', name: 'Chocolate & Confectionery',                 emoji: '🍫', color: '#884ea0' },
+  { id: 'home_baking',   name: 'Eggs & Baking',                             emoji: '🥚', color: '#b7860b' },
+  { id: 'tinned',        name: 'Tinned Goods, Oils, Vinegars & Spices',     emoji: '🥫', color: '#2471a3' },
+  { id: 'sauces_stocks', name: 'Soup, Stock, Gravy & Table Sauces',         emoji: '🫙', color: '#d35400' },
+  { id: 'rice_spices',   name: 'Rice, World Foods & Cooking Sauces',        emoji: '🍚', color: '#b03060' },
+  { id: 'pasta_sauces',  name: 'Pasta & Pasta Sauces',                      emoji: '🍝', color: '#c0562a' },
+  { id: 'cereals',       name: 'Cereals, Tea & Coffee',                     emoji: '☕', color: '#795548' },
+  { id: 'frozen',        name: 'Frozen',                                    emoji: '🧊', color: '#5dade2' },
+  { id: 'cleaning',      name: 'Kitchen Cleaning, Bin Liners, Foil & Cling Film', emoji: '🧹', color: '#16a085' },
+  { id: 'other',         name: 'Misc',                                      emoji: '🛍️', color: '#95a5a6' },
 ];
+const CAT_IDS = new Set(CATEGORIES.map(c => c.id));
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 let items = []; // { id, name, qty, unit, category, checked }
 let wakeLock = null;
-let collapsedCategories = new Set();
+let catOverride = new Map(); // categoryId -> true (open) / false (closed); absent = default (closed once everything is ticked)
+let editingId = null;
 
 // ─── MICROPHONE / SPEECH RECOGNITION ─────────────────────────────────────────
 let recognition = null;
@@ -1304,6 +1370,7 @@ const CATEGORY_KEYWORDS = {
     'baileys irish cream','amaretto disaronno','aperol spritz','limoncello',
     'jagermeister','sambuca','tequila blanco','cointreau','kahlua',
     'port bottle','sherry bottle','vermouth','brandy','cognac hennessy',
+    'strongbow','stella artois','stella','heineken','guinness','carling','peroni','corona','kopparberg','magners','bulmers','fosters','amstel','budweiser',
     'beer','lager','ale','stout','cider','wine','spirits','gin','vodka',
     'whisky','whiskey','rum','prosecco','champagne','port','sherry'
   ],
@@ -1380,7 +1447,7 @@ const CATEGORY_KEYWORDS = {
     'scottish oats','pinhead oatmeal','organic porridge oats',
     'luxury muesli','swiss muesli','fruit and nut muesli','bircher muesli',
     'honey granola','berry granola','chocolate granola','toasted granola',
-    'cornflakes','corn flakes',
+    'cornflakes','corn flakes','weetabix','cheerios','shreddies','frosties','coco pops','rice krispies','special k','crunchy nut','bran flakes','alpen','ready brek',
     'cereal','porridge','oats','granola','muesli'
   ],
   home_baking: [
@@ -1522,6 +1589,7 @@ const CATEGORY_KEYWORDS = {
     'amaretti biscuit','cantucci biscotti','langues de chat',
     'lebkuchen biscuit','stroopwafel',
     'digestive biscuit','shortbread','hobnob','rich tea',
+    'digestive','hobnob','jaffa cake','bourbon','custard cream','rich tea','oreo','biscoff','jammie dodger','party ring','malted milk',
     'biscuit','cookie','cookies','wafer','ginger nut'
   ],
   sauces_stocks: [
@@ -1572,7 +1640,7 @@ const CATEGORY_KEYWORDS = {
     'fajita seasoning mix','taco seasoning mix',
     'caesar dressing','salad dressing','ranch dressing','thousand island',
     'balsamic glaze','honey mustard',
-    'ketchup','mustard','mayo','mayonnaise','gravy','stock','relish',
+    'sweet chilli','ketchup','mustard','mayo','mayonnaise','gravy','stock','relish',
     'pickle','chutney','vinegar','marmite','soy sauce','pesto',
     'hot sauce','bbq sauce','worcestershire','salad cream','hollandaise',
     'oil','olive oil','bouillon'
@@ -1604,7 +1672,7 @@ const CATEGORY_KEYWORDS = {
     'heinz spaghetti','heinz spaghetti hoops','heinz ravioli',
     'chickpea','lentil','black bean','butter bean','kidney bean','cannellini',
     'napolina','cirio','del monte','dole tinned','princes tinned','john west',
-    'baked bean','bean','soup','tinned tomato','passata'
+    'chopped tomato','baked bean','bean','soup','tinned tomato','passata'
   ],
   rice_spices: [
     'tilda basmati rice','tilda easy cook basmati','uncle ben\'s express rice',
@@ -1679,7 +1747,8 @@ const CATEGORY_KEYWORDS = {
     'panko breadcrumb','golden breadcrumb bag','natural breadcrumb',
     'pasta','spaghetti','penne','fusilli','tagliatelle','linguine','macaroni',
     'rigatoni','farfalle','orzo','gnocchi','lasagne','noodle','couscous',
-    'pasta sauce','jar sauce','stir fry sauce','arrabiata','bolognese sauce','bolognaise','pesto'
+    'pasta sauce','jar sauce','stir fry sauce','arrabiata','bolognese sauce','bolognaise','pesto',
+    'korma','tikka masala','jalfrezi','balti','rogan josh','curry sauce','cooking sauce','sweet and sour','stuffing','paxo'
   ],
   frozen: [
     'birds eye garden peas','birds eye petit pois','birds eye sweet pea',
@@ -1826,8 +1895,55 @@ const CATEGORY_KEYWORDS = {
   ],
 };
 
+// ─── AISLE ROUTING ────────────────────────────────────────────────────────────
+// The keyword lists above are grouped by their original (coarser) sections. These
+// rules route each keyword into the shop-order aisles in CATEGORIES: some sections
+// merge into one aisle, others split by pattern, and the first matching rule wins.
+const AISLE_DEFAULT = {
+  fruit_veg: 'veg', dairy: 'cheese_butter', beer_wine: 'beer',
+  tea_coffee: 'cereals', rice_spices: 'tinned', pet: 'other', laundry: 'other'
+};
+const AISLE_RULES = {
+  fruit_veg: [
+    [/pepper|potato|squash|pumpkin|mushroom|cabbage|corn|chilli|ginger/, 'veg'],
+    [/salad|lettuce|gem|rocket|watercress|cucumber|leaf|leaves|radish|spring onion|tomato|spinach|herb|coriander|parsley|basil|mint|thyme|rosemary/, 'salad'],
+    [/avocado|papaya|passion fruit|plantain|dragon fruit|lychee|starfruit|pomegranate|grape|clementine|satsuma|mandarin|melon|plum|nectarine|peach|apricot|\bfig\b|\bdate\b|berry|cherry|apple|pear|banana|orange|lemon|lime|mango|pineapple|kiwi|^fruit$/, 'fruit'],
+  ],
+  dairy: [
+    [/milk|cravendale|arla|st helen|lactofree|lacto free/, 'milk'],
+    [/yogh?urt|activia|muller|fromage|petit filous|quark|labneh|custard|brulee|panna|profiterole|fage|yeo valley/, 'yoghurt'],
+  ],
+  beer_wine: [
+    [/\b(wine|prosecco|cava|champagne|cremant|gin|vodka|whiske?y|rum|brandy|cognac|port|sherry|vermouth|spirits)\b|moet|veuve|lanson|sauvignon|pinot|chardonnay|riesling|albarino|cabernet|merlot|shiraz|malbec|tempranillo|ros[eé]|jacob's|wolf blass|blossom hill|hardys|barefoot|yellow tail|gordon's|bombay|tanqueray|hendrick|beefeater|grey goose|absolut|smirnoff|jack daniel|jameson|famous grouse|glenfiddich|johnnie walker|monkey shoulder|glenlivet|captain morgan|bacardi|malibu|baileys|amaretto|aperol|limoncello|jagermeister|sambuca|tequila|cointreau|kahlua/, 'wine'],
+  ],
+  tinned: [
+    [/soup|minestrone|cream of tomato|baxters highland|campbell/, 'sauces_stocks'],
+  ],
+  sauces_stocks: [
+    [/pesto/, 'pasta_sauces'],
+    [/\boil\b|vinegar|balsamic glaze|balsamic of modena|seasoning/, 'tinned'],
+    [/oyster|hoisin|teriyaki|fish sauce|soy|kikkoman|enchilada|romesco|salsa|sriracha|blue dragon|amoy|lee kum kee|lingham|sweet chilli|thai taste|wagamama|cholula/, 'rice_spices'],
+  ],
+  rice_spices: [
+    [/\brice\b|basmati|jasmine|risotto|arborio|carnaroli|sushi|sticky|tilda|uncle ben|veetee|merchant gourmet/, 'rice_spices'],
+  ],
+  pasta_sauces: [
+    [/pasta/, 'pasta_sauces'],
+    [/stuffing|paxo|breadcrumb/, 'sauces_stocks'],
+    [/korma|tikka|balti|jalfrezi|dopiaza|rogan|sweet and sour|black bean|stir fry|pad thai|sharwood|blue dragon|uncle ben|couscous|bulgur|quinoa|barley|freekeh|farro|spelt|noodle|ramen|udon|soba|vermicelli|ramyeon|nissin/, 'rice_spices'],
+  ],
+};
+
+function aisleFor(sectionId, keyword) {
+  const rule = (AISLE_RULES[sectionId] || []).find(([re]) => re.test(keyword));
+  return rule ? rule[1] : (AISLE_DEFAULT[sectionId] || sectionId);
+}
+
 function guessCategory(name) {
   const lower = name.toLowerCase();
+
+  // Soup always wins, even tinned soup
+  if (lower.includes('soup')) return 'sauces_stocks';
 
   // PRIORITY: tinned/canned triggers always go to tinned
   for (const trigger of TINNED_TRIGGERS) {
@@ -1838,10 +1954,8 @@ function guessCategory(name) {
   // always beat short words ('bread flour' beats 'bread', 'steak' beats 'tea')
   if (!guessCategory._kws) {
     const list = [];
-    for (const cat of CATEGORIES) {
-      const kws = CATEGORY_KEYWORDS[cat.id];
-      if (!kws) continue;
-      for (const kw of kws) list.push([kw, cat.id]);
+    for (const [sectionId, kws] of Object.entries(CATEGORY_KEYWORDS)) {
+      for (const kw of kws) list.push([kw, aisleFor(sectionId, kw)]);
     }
     list.sort((a, b) => b[0].length - a[0].length);
     guessCategory._kws = list;
@@ -1968,6 +2082,8 @@ function parseAndOrganise() {
     }
   });
 
+  saveItems();
+
   const status = document.getElementById('parseStatus');
   status.classList.add('visible');
   document.getElementById('parseStatusText').textContent =
@@ -1978,88 +2094,114 @@ function parseAndOrganise() {
 }
 
 // ─── ORGANISED VIEW ───────────────────────────────────────────────────────────
+function catOf(item) { return CAT_IDS.has(item.category) ? item.category : 'other'; }
+
+function isCatOpen(catId) {
+  if (catOverride.has(catId)) return catOverride.get(catId);
+  const catItems = items.filter(i => catOf(i) === catId);
+  return !(catItems.length && catItems.every(i => i.checked));
+}
+
 function renderOrganised() {
   const container = document.getElementById('categoryList');
   const total = items.length;
   const done = items.filter(i => i.checked).length;
 
-  document.getElementById('listCount').innerHTML = 
-    total === 0 ? '' : `<strong>${total - done}</strong> remaining · ${done} ticked`;
+  document.getElementById('listCount').innerHTML =
+    total === 0 ? '' : `<strong>${total - done}</strong> to get · ${done} ticked`;
+  document.getElementById('overallFill').style.width = total ? Math.round(done / total * 100) + '%' : '0%';
+  document.getElementById('clearDoneBtn').style.visibility = done ? 'visible' : 'hidden';
 
   if (total === 0) {
     container.innerHTML = `
       <div class="empty-state">
         <div class="empty-icon">🛒</div>
-        <p>Your organised list will appear here.<br>Type items in the Free-type tab first.</p>
+        <p>Your list is empty.<br>Add an item above, or use the Free-type tab.</p>
       </div>`;
     return;
   }
 
-  // Group by category
+  const scrollY = window.scrollY;
+
   const groups = {};
   CATEGORIES.forEach(c => { groups[c.id] = []; });
-  items.forEach(item => {
-    if (groups[item.category]) groups[item.category].push(item);
-    else groups['other'].push(item);
-  });
+  items.forEach(item => groups[catOf(item)].push(item));
 
   let html = '';
   CATEGORIES.forEach(cat => {
     const catItems = groups[cat.id];
     if (catItems.length === 0) return;
 
-    const allDone = catItems.every(i => i.checked);
-    const doneCt = catItems.filter(i => i.checked).length;
-    const collapsed = collapsedCategories.has(cat.id);
-    const badgeClass = allDone ? 'done' : '';
+    const left = catItems.filter(i => !i.checked).length;
+    const allDone = left === 0;
+    const open = isCatOpen(cat.id);
+    // ticked items sink to the bottom of their aisle
+    const ordered = [...catItems.filter(i => !i.checked), ...catItems.filter(i => i.checked)];
+    const pct = Math.round((catItems.length - left) / catItems.length * 100);
 
-    const pct = catItems.length ? Math.round(doneCt / catItems.length * 100) : 0;
     html += `
-    <div class="category-group" id="cat_${cat.id}" style="--cat-color:${cat.color};--cat-color-bg:${cat.color}22">
+    <div class="category-group ${allDone ? 'all-done' : ''}" id="cat_${cat.id}" style="--cat-color:${cat.color};--cat-color-bg:${cat.color}22">
       <div class="category-header" onclick="toggleCategory('${cat.id}')">
         <span class="category-emoji-wrap">${cat.emoji}</span>
         <span class="category-name">${cat.name}</span>
-        <span class="category-badge ${badgeClass}">${doneCt}/${catItems.length}</span>
-        <span class="category-toggle ${collapsed ? 'collapsed' : ''}">▾</span>
+        <span class="category-badge ${allDone ? 'done' : ''}">${allDone ? '✓' : left + ' left'}</span>
+        <span class="category-toggle ${open ? '' : 'collapsed'}">▾</span>
       </div>
       <div class="category-progress"><div class="category-progress-fill" style="width:${pct}%"></div></div>
-      <div class="category-items ${collapsed ? 'collapsed' : ''}" id="items_${cat.id}">
-        ${catItems.map(item => renderItem(item)).join('')}
-        <div class="add-item-row">
-          <input class="add-item-input" type="text" placeholder="Add to ${cat.name.toLowerCase()}…"
-            onkeydown="handleAddItem(event, '${cat.id}', this)" />
-          <button class="add-item-btn" onclick="addItemToCategory('${cat.id}', this.previousElementSibling)">+</button>
-        </div>
+      <div class="category-items ${open ? '' : 'collapsed'}" id="items_${cat.id}">
+        ${ordered.map(item => String(item.id) === String(editingId) ? renderEditor(item) : renderItem(item)).join('')}
       </div>
     </div>`;
   });
 
   container.innerHTML = html;
+  window.scrollTo(0, scrollY);
+}
+
+function formatQty(item) {
+  if (item.qty && item.unit === 'x') return `${item.qty}×`;
+  if (item.qty) return `${item.qty}${item.unit ? ' ' + item.unit : ''}`;
+  return item.unit || '';
 }
 
 function renderItem(item) {
-  const qtyText = item.qty ? `${item.qty}${item.unit ? ' ' + item.unit : ''}` : (item.unit || '');
+  const qtyText = formatQty(item);
   return `
   <div class="item-row-wrap" id="wrap_${item.id}">
-    <div class="swipe-delete-bg">Swipe to remove</div>
+    <div class="swipe-delete-bg">Remove</div>
     <div class="item-row ${item.checked ? 'checked' : ''}" id="item_${item.id}"
+      onclick="rowTap('${item.id}')"
       ontouchstart="swipeStart(event,'${item.id}')"
       ontouchmove="swipeMove(event,'${item.id}')"
       ontouchend="swipeEnd(event,'${item.id}')">
-      <div class="item-checkbox" onclick="toggleItem('${item.id}')"></div>
+      <div class="item-checkbox"></div>
       <div class="item-content">
-        <input class="item-edit-input" 
-          value="${escHtml(item.name)}" 
-          style="${item.checked ? 'color:var(--ink-faint);text-decoration:line-through;text-decoration-color:var(--green-mid)' : ''}"
-          onblur="updateItemName('${item.id}', this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()" />
-        ${qtyText ? `<input class="item-qty-input" value="${escHtml(qtyText)}" 
-          onblur="updateItemQty('${item.id}', this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()" />` : 
-          `<input class="item-qty-input" placeholder="qty / unit" 
-          onblur="updateItemQty('${item.id}', this.value)"
-          onkeydown="if(event.key==='Enter')this.blur()" />`}
+        <span class="item-name">${escHtml(item.name)}</span>
+        ${qtyText ? `<span class="item-qty-pill">${escHtml(qtyText)}</span>` : ''}
       </div>
+      <button class="item-edit-btn" aria-label="Edit ${escHtml(item.name)}"
+        onclick="event.stopPropagation(); startEdit('${item.id}')">✎</button>
+    </div>
+  </div>`;
+}
+
+function renderEditor(item) {
+  const qtyText = item.qty ? `${item.qty}${item.unit ? (item.unit === 'x' ? 'x' : ' ' + item.unit) : ''}` : (item.unit || '');
+  const options = CATEGORIES.map(c =>
+    `<option value="${c.id}" ${c.id === catOf(item) ? 'selected' : ''}>${c.emoji} ${c.name}</option>`).join('');
+  return `
+  <div class="item-editor">
+    <input class="editor-input" id="edit_name" value="${escHtml(item.name)}" placeholder="Item"
+      onkeydown="if(event.key==='Enter')saveEdit('${item.id}')" />
+    <div class="editor-row">
+      <input class="editor-input qty" id="edit_qty" value="${escHtml(qtyText)}" placeholder="Qty, e.g. 2 or 500g"
+        onkeydown="if(event.key==='Enter')saveEdit('${item.id}')" />
+      <select class="editor-select" id="edit_cat" aria-label="Aisle">${options}</select>
+    </div>
+    <div class="editor-actions">
+      <button class="editor-btn danger" onclick="deleteItem('${item.id}')">Delete</button>
+      <button class="editor-btn" onclick="cancelEdit()">Cancel</button>
+      <button class="editor-btn primary" onclick="saveEdit('${item.id}')">Save</button>
     </div>
   </div>`;
 }
@@ -2070,6 +2212,7 @@ function escHtml(s) {
 
 // ─── SWIPE TO DELETE ──────────────────────────────────────────────────────────
 const swipeState = {};
+let lastSwipeAt = 0; // a swipe must not also count as a tap
 
 function swipeStart(e, id) {
   const touch = e.touches[0];
@@ -2108,6 +2251,8 @@ function swipeEnd(e, id) {
 
   el.style.transition = 'transform 0.2s ease';
 
+  if (state.dragging) lastSwipeAt = Date.now();
+
   if (dx < -80) {
     // Swiped far enough — delete
     el.style.transform = `translateX(-100%)`;
@@ -2123,88 +2268,186 @@ function swipeEnd(e, id) {
 }
 
 // ─── ITEM ACTIONS ─────────────────────────────────────────────────────────────
-function toggleItem(id) {
-  const item = items.find(i => String(i.id) === String(id));
-  if (item) { item.checked = !item.checked; renderOrganised(); }
+function findItem(id) { return items.find(i => String(i.id) === String(id)); }
+
+// Every change to the list goes through here: save, then redraw.
+function commit() {
+  saveItems();
+  renderOrganised();
 }
 
-function updateItemName(id, val) {
-  const item = items.find(i => String(i.id) === String(id));
-  if (item && val.trim()) item.name = val.trim();
-}
-
-function updateItemQty(id, val) {
-  const item = items.find(i => String(i.id) === String(id));
+function rowTap(id) {
+  if (Date.now() - lastSwipeAt < 400) return;
+  commitEditIfAny();
+  const item = findItem(id);
   if (!item) return;
-  val = val.trim();
-  if (!val) { item.qty = null; item.unit = null; return; }
-  const m = val.match(/^([\d.]+)\s*(.*)$/);
-  if (m) { item.qty = parseFloat(m[1]); item.unit = m[2].trim() || null; }
-  else { item.qty = null; item.unit = val; }
+  item.checked = !item.checked;
+  catOverride.delete(catOf(item)); // re-evaluate: collapses an aisle once its last item is ticked
+  commit();
+}
+
+function startEdit(id) {
+  commitEditIfAny();
+  editingId = id;
+  renderOrganised();
+  const nameEl = document.getElementById('edit_name');
+  if (nameEl) nameEl.focus(); // synchronous, so iOS still treats it as part of the tap
+}
+
+function cancelEdit() {
+  editingId = null;
+  renderOrganised();
+}
+
+function commitEditIfAny() {
+  if (editingId !== null) saveEdit(editingId);
+}
+
+function parseQtyInput(val) {
+  val = (val || '').trim();
+  if (!val) return { qty: null, unit: null };
+  const m = val.match(/^(\d+(?:\.\d+)?)\s*(.*)$/);
+  if (m) return { qty: parseFloat(m[1]), unit: m[2].trim() || null };
+  return { qty: null, unit: val };
+}
+
+function saveEdit(id) {
+  const item = findItem(id);
+  const nameEl = document.getElementById('edit_name');
+  if (item && nameEl) {
+    const name = nameEl.value.trim();
+    if (name) item.name = name.charAt(0).toUpperCase() + name.slice(1);
+    const q = parseQtyInput(document.getElementById('edit_qty').value);
+    item.qty = q.qty;
+    item.unit = q.unit;
+    const cat = document.getElementById('edit_cat').value;
+    if (CAT_IDS.has(cat)) {
+      item.category = cat;
+      catOverride.delete(cat);
+    }
+  }
+  editingId = null;
+  commit();
 }
 
 function deleteItem(id) {
   items = items.filter(i => String(i.id) !== String(id));
-  renderOrganised();
+  if (String(editingId) === String(id)) editingId = null;
+  commit();
 }
 
 function clearDone() {
   items = items.filter(i => !i.checked);
-  renderOrganised();
+  commit();
 }
 
 function completeShop() {
   if (!confirm('Shop complete? This will clear everything.')) return;
   items = [];
+  editingId = null;
+  catOverride.clear();
   document.getElementById('notepadText').value = '';
-  localStorage.removeItem('shopsmart_notepad');
-  localStorage.removeItem('shopsmart_items');
+  try {
+    localStorage.removeItem('shopsmart_notepad');
+    localStorage.removeItem('shopsmart_items');
+  } catch (e) {}
   document.getElementById('parseStatus').classList.remove('visible');
   renderOrganised();
   showView('notepad');
 }
 
 function toggleCategory(catId) {
-  if (collapsedCategories.has(catId)) collapsedCategories.delete(catId);
-  else collapsedCategories.add(catId);
+  commitEditIfAny();
+  catOverride.set(catId, !isCatOpen(catId));
   renderOrganised();
 }
 
-function handleAddItem(event, catId, input) {
-  if (event.key === 'Enter') addItemToCategory(catId, input);
+// ─── QUICK ADD ────────────────────────────────────────────────────────────────
+let hintTimer = null;
+
+function showAddHint(html) {
+  const el = document.getElementById('quickAddHint');
+  el.innerHTML = html;
+  clearTimeout(hintTimer);
+  hintTimer = setTimeout(() => { el.innerHTML = ''; }, 4000);
 }
 
-function addItemToCategory(catId, input) {
-  const val = input.value.trim();
-  if (!val) return;
-  // Parse qty from input like "2x milk" or "500g chicken"
-  let name = val, qty = null, unit = null;
-  const m1 = val.match(/^(\d+)\s*x\s+(.+)$/i);
-  const m2 = val.match(/^([\d.]+)\s*(g|kg|ml|l|oz|lb|pints?)\s+(.+)$/i);
-  if (m1) { qty = parseInt(m1[1]); unit = 'x'; name = m1[2]; }
-  else if (m2) { qty = parseFloat(m2[1]); unit = m2[2]; name = m2[3]; }
+function quickAdd(event) {
+  event.preventDefault();
+  commitEditIfAny();
+  const input = document.getElementById('quickAddInput');
+  const parsed = parseRawText(input.value);
+  if (!parsed.length) return;
 
-  items.push({ id: Date.now() + Math.random(), name, qty, unit, category: catId, checked: false });
-  input.value = '';
-  renderOrganised();
+  const byName = new Map(items.map(i => [i.name.toLowerCase(), i]));
+  const added = [], restored = [], dupes = [];
+  parsed.forEach(p => {
+    const existing = byName.get(p.name.toLowerCase());
+    if (existing) {
+      if (existing.checked) { existing.checked = false; catOverride.delete(catOf(existing)); restored.push(existing); }
+      else dupes.push(existing);
+      return;
+    }
+    const item = { id: Date.now() + Math.random(), name: p.name, qty: p.qty, unit: p.unit, category: p.category, checked: false };
+    items.push(item);
+    byName.set(p.name.toLowerCase(), item);
+    catOverride.delete(item.category);
+    added.push(item);
+  });
+
+  input.value = ''; // keep focus so several items can be added in a row
+  commit();
+
+  const catName = item => CATEGORIES.find(c => c.id === catOf(item)).name;
+  const parts = [];
+  if (added.length === 1) parts.push(`Added <b>${escHtml(added[0].name)}</b> → ${escHtml(catName(added[0]))}`);
+  else if (added.length > 1) parts.push(`Added <b>${added.length} items</b>`);
+  restored.forEach(i => parts.push(`<b>${escHtml(i.name)}</b> is back on the list`));
+  dupes.forEach(i => parts.push(`<b>${escHtml(i.name)}</b> is already on the list`));
+  showAddHint(parts.join(' · '));
 }
 
-// Load notepad from localStorage on startup
+// ─── SAVING & LOADING ─────────────────────────────────────────────────────────
+// Bump CAT_VERSION when aisles change: items in removed aisles (and Misc) are re-filed once.
+const CAT_VERSION = '2';
+
+function saveItems() {
+  try { localStorage.setItem('shopsmart_items', JSON.stringify(items)); } catch (e) {}
+}
+
+function loadItems() {
+  let saved = [];
+  let migrate = false;
+  try {
+    saved = JSON.parse(localStorage.getItem('shopsmart_items')) || [];
+    migrate = localStorage.getItem('shopsmart_catver') !== CAT_VERSION;
+  } catch (e) {}
+  items = saved.map(item =>
+    (!CAT_IDS.has(item.category) || (migrate && item.category === 'other'))
+      ? { ...item, category: guessCategory(item.name) }
+      : item);
+  try { localStorage.setItem('shopsmart_catver', CAT_VERSION); } catch (e) {}
+  saveItems();
+}
+
 window.addEventListener('load', () => {
-  const saved = localStorage.getItem('shopsmart_notepad');
-  if (saved) document.getElementById('notepadText').value = saved;
-  const savedItems = localStorage.getItem('shopsmart_items');
-  if (savedItems) { try { items = JSON.parse(savedItems); } catch(e) {} }
+  try {
+    const saved = localStorage.getItem('shopsmart_notepad');
+    if (saved) document.getElementById('notepadText').value = saved;
+  } catch (e) {}
+  loadItems();
+  if (items.length) showView('organised'); // mid-shop you want the list, not the notepad
 });
 
 // Save on changes
 document.getElementById('notepadText').addEventListener('input', () => {
-  localStorage.setItem('shopsmart_notepad', document.getElementById('notepadText').value);
+  try { localStorage.setItem('shopsmart_notepad', document.getElementById('notepadText').value); } catch (e) {}
 });
 
-setInterval(() => {
-  localStorage.setItem('shopsmart_items', JSON.stringify(items));
-}, 3000);
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') saveItems();
+});
+window.addEventListener('pagehide', saveItems);
 
 // iOS standalone mode: force focus synchronously on touchstart (setTimeout breaks it).
 // Scoped to the notepad only — a document-wide listener would force-focus item
