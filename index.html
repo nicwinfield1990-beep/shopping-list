@@ -1285,7 +1285,7 @@ const CATEGORY_KEYWORDS = {
     'cockle','whelk','clam',
     'fresh fishcake','smoked salmon','smoked mackerel','smoked haddock','smoked trout',
     'salmon','cod','haddock','mackerel','sea bass','prawn','shrimp','crab','lobster',
-    'scallop','mussel','anchovy','trout','tilapia','pollock','fish',
+    'scallop','mussel','fresh anchovy','trout','tilapia','pollock','fish',
     'calamari','kipper','plaice','tuna steak','fish cake','fishcake','whitebait','fresh sardine','sardine fresh','squid','sea bream','crab stick'
   ],
   cooked_meats: [
@@ -1385,7 +1385,7 @@ const CATEGORY_KEYWORDS = {
     'strongbow','stella artois','stella','heineken','guinness','carling','peroni','corona','kopparberg','magners','bulmers','fosters','amstel','budweiser',
     'beer','lager','ale','stout','cider','wine','spirits','gin','vodka',
     'whisky','whiskey','rum','prosecco','champagne','port','sherry',
-    'baileys','pimms','smirnoff','tanqueray','aperol','cava','jack daniels','bacardi','gordons','doom bar','ipa','fosters','san miguel','pale ale','real ale','craft beer','budweiser'
+    'baileys','pimms','smirnoff','tanqueray','aperol','cava','jack daniels','bacardi','gordons','doom bar','ipa','fosters','estrella','super bock','cruzcampo','mahou','tiger','asahi','modelo','pacifico','red stripe','tennents','coors','becks','carlsberg','birra moretti','efes','sol','san miguel','pale ale','real ale','craft beer','budweiser'
   ],
   soft_drinks: [
     'coca cola original','diet coke can','coke zero can','coke zero sugar','pepsi max can',
@@ -1693,7 +1693,7 @@ const CATEGORY_KEYWORDS = {
     'chickpea','lentil','black bean','butter bean','kidney bean','cannellini',
     'napolina','cirio','del monte','dole tinned','princes tinned','john west',
     'chopped tomato','baked bean','bean','soup','tinned tomato','passata',
-    'tuna','sardine','coconut milk','spaghetti hoops','chopped tomato','tomato puree','baked bean','tin','chickpea'
+    'tuna','sardine','anchovy','coconut milk','spaghetti hoops','chopped tomato','tomato puree','baked bean','tin','chickpea'
   ],
   rice_spices: [
     'tilda basmati rice','tilda easy cook basmati','uncle ben\'s express rice',
@@ -1992,7 +1992,7 @@ function hasWord(text, keyword) {
 const HEAD_NOUNS = {
   yoghurt: 'yoghurt', yogurt: 'yoghurt', juice: 'soft_drinks', stock: 'sauces_stocks',
   oil: 'tinned', vinegar: 'tinned', biscuit: 'sweet_biscuits', cookie: 'sweet_biscuits',
-  crisp: 'crisps', tea: 'cereals', coffee: 'cereals'
+  crisp: 'crisps', tea: 'cereals', coffee: 'cereals', squash: 'soft_drinks', cordial: 'soft_drinks'
 };
 
 function guessCategory(name) {
@@ -2056,13 +2056,15 @@ function parseQtyFromToken(token) {
   return null;
 }
 
+const COUNT_UNITS = ['pint','pack','bag','tin','can','bottle','jar','bunch','loaf','box','carton','punnet','tub','packet'];
+
 function parseRawText(text) {
   // Split on commas or newlines
   const rawItems = text.split(/[\n,]+/).map(s => s.trim()).filter(Boolean);
   const parsed = [];
 
   for (let raw of rawItems) {
-    let qty = null, unit = null, name = raw;
+    let qty = null, unit = null, name = raw, catText = null;
 
     // Try leading quantity: "2x milk", "500g chicken", "2 pints milk", "3 tins tomatoes"
     const tokens = raw.split(/\s+/);
@@ -2075,6 +2077,13 @@ function parseRawText(text) {
       if (q) {
         qty = q.qty; unit = q.unit;
         name = tokens.slice(1).join(' ');
+        // "2 tins chickpeas", "2 pints milk", "3 bags of carrots"
+        const w = second.toLowerCase().replace(/s$/, '');
+        if (!unit && tokens.length > 2 && COUNT_UNITS.includes(w)) {
+          unit = w;
+          name = tokens.slice(tokens[2].toLowerCase() === 'of' && tokens.length > 3 ? 3 : 2).join(' ');
+          catText = tokens.slice(1).join(' '); // keep 'tins of' etc. for categorising
+        }
       } else {
         // "2 pints", "3 tins", "500 g"
         const unitWords = ['g','kg','ml','l','ltr','pint','pints','oz','lb','lbs','pack','packs','bag','bags','tin','tins','can','cans','bottle','bottles','jar','jars','bunch','loaf','loaves','box','boxes','x'];
@@ -2105,7 +2114,7 @@ function parseRawText(text) {
     // Capitalise first letter
     name = name.charAt(0).toUpperCase() + name.slice(1);
 
-    parsed.push({ name, qty, unit, category: guessCategory(name) });
+    parsed.push({ name, qty, unit, category: guessCategory(catText || name) });
   }
 
   return parsed;
@@ -2213,9 +2222,15 @@ function renderOrganised() {
   window.scrollTo(0, scrollY);
 }
 
+const COUNT_UNIT_PLURALS = { bunch: 'bunches', loaf: 'loaves' };
+
 function formatQty(item) {
   if (item.qty && item.unit === 'x') return `${item.qty}×`;
-  if (item.qty) return `${item.qty}${item.unit ? ' ' + item.unit : ''}`;
+  if (item.qty && item.unit) {
+    const plural = item.qty !== 1 && COUNT_UNITS.includes(item.unit);
+    return `${item.qty} ${plural ? (COUNT_UNIT_PLURALS[item.unit] || item.unit + 's') : item.unit}`;
+  }
+  if (item.qty) return String(item.qty);
   return item.unit || '';
 }
 
