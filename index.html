@@ -908,9 +908,9 @@ const CATEGORIES = [
   { id: 'fish',          name: 'Fish',                                      emoji: '🐟', color: '#1abc9c' },
   { id: 'cooked_meats',  name: 'Cooked Meat',                               emoji: '🍖', color: '#a93226' },
   { id: 'ready_meals',   name: 'Ready Meals',                               emoji: '🍱', color: '#d68910' },
-  { id: 'cheese_butter', name: 'Cheese, Butter & Cream',                    emoji: '🧀', color: '#f0a500' },
+  { id: 'cheese_butter', name: 'Cheese & Butter',                           emoji: '🧀', color: '#f0a500' },
   { id: 'yoghurt',       name: 'Yoghurt & Desserts',                        emoji: '🍮', color: '#0097a7' },
-  { id: 'milk',          name: 'Milk',                                      emoji: '🥛', color: '#4a90d9' },
+  { id: 'milk',          name: 'Milk & Cream',                                emoji: '🥛', color: '#4a90d9' },
   { id: 'beer',          name: 'Beer & Cider',                              emoji: '🍺', color: '#b8860b' },
   { id: 'wine',          name: 'Wine & Spirits',                            emoji: '🍷', color: '#7d3c98' },
   { id: 'soft_drinks',   name: 'Soft Drinks',                               emoji: '🧃', color: '#2196f3' },
@@ -924,7 +924,9 @@ const CATEGORIES = [
   { id: 'pasta_sauces',  name: 'Pasta & Pasta Sauces',                      emoji: '🍝', color: '#c0562a' },
   { id: 'cereals',       name: 'Cereals, Tea & Coffee',                     emoji: '☕', color: '#795548' },
   { id: 'frozen',        name: 'Frozen',                                    emoji: '🧊', color: '#5dade2' },
+  { id: 'pet',           name: 'Dog Food & Treats',                         emoji: '🐕', color: '#a0785a' },
   { id: 'cleaning',      name: 'Kitchen Cleaning, Bin Liners, Foil & Cling Film', emoji: '🧹', color: '#16a085' },
+  { id: 'laundry',       name: 'Laundry',                                   emoji: '🧺', color: '#546e7a' },
   { id: 'other',         name: 'Misc',                                      emoji: '🛍️', color: '#95a5a6' },
 ];
 const CAT_IDS = new Set(CATEGORIES.map(c => c.id));
@@ -1901,7 +1903,7 @@ const CATEGORY_KEYWORDS = {
 // merge into one aisle, others split by pattern, and the first matching rule wins.
 const AISLE_DEFAULT = {
   fruit_veg: 'veg', dairy: 'cheese_butter', beer_wine: 'beer',
-  tea_coffee: 'cereals', rice_spices: 'tinned', pet: 'other', laundry: 'other'
+  tea_coffee: 'cereals', rice_spices: 'tinned'
 };
 const AISLE_RULES = {
   fruit_veg: [
@@ -1910,7 +1912,8 @@ const AISLE_RULES = {
     [/avocado|papaya|passion fruit|plantain|dragon fruit|lychee|starfruit|pomegranate|grape|clementine|satsuma|mandarin|melon|plum|nectarine|peach|apricot|\bfig\b|\bdate\b|berry|cherry|apple|pear|banana|orange|lemon|lime|mango|pineapple|kiwi|^fruit$/, 'fruit'],
   ],
   dairy: [
-    [/milk|cravendale|arla|st helen|lactofree|lacto free/, 'milk'],
+    [/cream cheese|philadelphia/, 'cheese_butter'],
+    [/milk|cream|creme fraiche|cravendale|arla|st helen|lactofree|lacto free/, 'milk'],
     [/yogh?urt|activia|muller|fromage|petit filous|quark|labneh|custard|brulee|panna|profiterole|fage|yeo valley/, 'yoghurt'],
   ],
   beer_wine: [
@@ -2409,7 +2412,7 @@ function quickAdd(event) {
 
 // ─── SAVING & LOADING ─────────────────────────────────────────────────────────
 // Bump CAT_VERSION when aisles change: items in removed aisles (and Misc) are re-filed once.
-const CAT_VERSION = '2';
+const CAT_VERSION = '3';
 
 function saveItems() {
   try { localStorage.setItem('shopsmart_items', JSON.stringify(items)); } catch (e) {}
